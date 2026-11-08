@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Supplier Quotation Dashboard</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#121e31;--line:#263650;--text:#eaf2ff;--muted:#9db0ca;--blue:#3b82f6;--green:#16a34a;--amber:#d97706;--red:#dc2626}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,Segoe UI,Arial;padding:20px}main{max-width:1250px;margin:auto}.head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}h1{margin:0}p,small{color:var(--muted)}button{padding:10px 13px;border:0;border-radius:9px;background:var(--blue);color:white;font:inherit;font-weight:600;cursor:pointer}.secondary{background:#25364f}.actions{display:flex;gap:8px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:18px 0}.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.metric{font-size:30px;font-weight:750;margin:8px 0}.label{color:var(--muted)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.barrow{display:grid;grid-template-columns:minmax(100px,1fr) 3fr 45px;gap:10px;align-items:center;margin:12px 0}.track{height:12px;border-radius:9px;background:#1c2b42;overflow:hidden}.bar{height:100%;background:var(--blue);border-radius:9px}.bar.green{background:var(--green)}.bar.amber{background:var(--amber)}.bar.red{background:var(--red)}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line)}.scroll{overflow:auto}.good{color:#86efac}.message{color:#93c5fd;margin-top:10px}@media(max-width:700px){body{padding:10px}.panel,.card{padding:13px}.grid{grid-template-columns:1fr}.metric{font-size:25px}}
+
+/* Phase 13 — Premium dark-blue UI refresh */
+:root{
+ --bg:#060d19!important;--panel:#0d1a2d!important;--line:#1d3554!important;
+ --text:#edf5ff!important;--muted:#91a8c6!important;--blue:#087cff!important;
+ --green:#10b981!important;--amber:#f59e0b!important;--red:#ef4444!important;
+}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 12% -10%,#102b50 0,transparent 36%),radial-gradient(ellipse at 100% 0,#0a2140 0,transparent 30%),#060d19!important;color:#edf5ff!important;font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif!important}
+main,.wrap{max-width:1320px!important}
+h1{font-size:clamp(24px,3vw,34px)!important;letter-spacing:-.6px;font-weight:750!important}
+h2{letter-spacing:-.3px}
+p,small,.muted,.sub{color:#91a8c6!important}
+.panel,.tile,.cards>div,.card{background:linear-gradient(145deg,rgba(15,31,52,.97),rgba(9,20,36,.98))!important;border:1px solid #1d3554!important;border-radius:16px!important;box-shadow:0 12px 32px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.025)!important}
+input,select,textarea{background:#071426!important;border:1px solid #294465!important;color:#edf5ff!important;border-radius:10px!important;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:#1687ff!important;box-shadow:0 0 0 3px rgba(8,124,255,.16)!important}
+button,.btn,.actions a,.head a,header a{border-radius:10px!important;transition:transform .15s,filter .15s,background .15s}
+button:not(.secondary):not(.btn2){background:linear-gradient(135deg,#087cff,#075bd4)!important;color:#fff!important;box-shadow:0 5px 15px rgba(8,124,255,.16)}
+button:hover,a:hover{filter:brightness(1.13);transform:translateY(-1px)}
+.secondary,.btn2{background:#172b45!important;color:#dcecff!important;border:1px solid #294465!important}
+a{color:#7fc0ff}
+table{border-collapse:separate!important;border-spacing:0!important;border:1px solid #1d3554!important;border-radius:12px!important;overflow:hidden}
+th{background:#10243d!important;color:#d9eaff!important;font-weight:650!important}
+td,th{border-bottom:1px solid #1b304b!important;padding:12px!important}
+tr:hover td{background:rgba(17,52,88,.22)}
+hr{border:0;border-top:1px solid #1d3554}
+.badge,.status{border-radius:999px!important}
+@media(max-width:700px){
+ body{padding:12px!important}
+ main,.wrap{padding-left:0!important;padding-right:0!important}
+ .panel{padding:14px!important;margin:12px 0!important}
+ table{min-width:680px}
+ h1{font-size:24px!important}
+}
+
+/* Phase 15 — Dashboard register tools */
+.register-tools input,.register-tools select{font:inherit;box-sizing:border-box}
+.register-tools button{white-space:nowrap}
+@media(max-width:650px){.register-tools>*{width:100%!important}}
+</style><style>
+/* Phase 14 — Dashboard and Portal visual polish */
+body:has(.cards) .cards{gap:16px}
+body:has(.cards) .card{position:relative;overflow:hidden;padding:20px 21px!important;min-height:112px}
+body:has(.cards) .card:before{content:"";position:absolute;right:-34px;top:-42px;width:110px;height:110px;border-radius:50%;background:rgba(8,124,255,.09);pointer-events:none}
+.metric{font-size:clamp(28px,3vw,36px)!important;line-height:1.15;color:#f5f9ff!important;letter-spacing:-1px}
+.label{font-size:12px!important;letter-spacing:.5px;text-transform:uppercase;color:#9bb4d2!important;font-weight:650}
+.head{padding-bottom:6px}
+.head h1{background:linear-gradient(90deg,#f4f8ff,#8fc7ff);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.actions button{border:1px solid rgba(88,145,210,.22)!important}
+.grid{gap:16px!important}
+.panel{padding:20px!important}
+.panel h2{margin-top:0;color:#e7f2ff!important}
+.tile{background:linear-gradient(150deg,#10233c,#0a1729)!important;transition:transform .18s,border-color .18s,box-shadow .18s}
+.tile:hover{transform:translateY(-3px);border-color:#2f75c4!important;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.tile h3{font-size:17px!important;color:#f0f7ff}
+.tag{border:1px solid #2b4b70!important;background:#102b49!important;color:#9bcaff!important}
+table{width:100%}
+@media(max-width:780px){
+ .grid{grid-template-columns:1fr!important}
+ .head{align-items:flex-start!important}
+ .actions{width:100%}
+ .actions button{flex:1}
+}
+</style></head><body><main>
+<div class="head"><div><h1>Supplier Quotation Dashboard</h1><p>Shared procurement overview • Live data from SQL Server</p><div id="userProfile" style="display:flex;align-items:center;gap:9px;margin-top:8px;color:#9bb4d2;font-size:13px"><span id="userName">Loading user…</span><span id="userRole" style="border:1px solid #294465;background:#102b49;border-radius:999px;padding:3px 9px;color:#9bcaff">—</span></div></div><div class="actions"><button class="secondary" onclick="location.href='/portal.html'">My Portal</button><button class="secondary" onclick="location.href='/business.html'">Business Data</button><button class="secondary" onclick="location.href='/comparison.html'">Price Comparison</button><button class="secondary" onclick="location.href='/approvals.html'">Approvals</button><button class="secondary" id="notificationBtn" onclick="location.href='/notifications.html'">Notifications <span id="unreadBadge" style="display:none;margin-left:6px;background:#ef4444;color:white;border-radius:999px;padding:2px 7px;font-size:12px">0</span></button><button onclick="load()">Refresh</button><button class="secondary" id="logoutBtn" type="button">Logout</button></div></div>
+<section class="panel" style="margin-top:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+<strong>Analytics Period</strong>
+<select id="analyticsPeriod" style="padding:10px;min-width:170px">
+<option value="all">All time</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option><option value="365">Last 12 months</option><option value="custom">Custom range</option>
+</select><input type="date" id="analyticsStart" aria-label="Start date" style="padding:10px;display:none"><input type="date" id="analyticsEnd" aria-label="End date" style="padding:10px;display:none"><button class="secondary" id="applyAnalyticsRange" style="display:none">Apply range</button><button class="secondary" id="exportAnalytics">Export analytics CSV</button><span id="periodLabel" class="message">Showing all quotation data</span>
+</section>
+<div class="cards">
+<div class="card"><div class="label">Active Suppliers</div><div class="metric" id="suppliers">—</div></div>
+<div class="card"><div class="label">Total RFQs</div><div class="metric" id="rfqs">—</div></div>
+<div class="card"><div class="label">Open RFQs</div><div class="metric" id="open">—</div></div>
+<div class="card"><div class="label">Received Quotations</div><div class="metric" id="quotes">—</div></div>
+<div class="card"><div class="label">Approved</div><div class="metric" id="approved">—</div></div>
+<div class="card"><div class="label">Awarded Suppliers</div><div class="metric" id="awarded">—</div></div>
+<div class="card"><div class="label">Pending Review</div><div class="metric" id="pending">—</div></div>
+<div class="card"><div class="label">Approval Rate</div><div class="metric" id="approvalRate">—</div></div>
+</div>
+<section class="panel" style="margin-top:16px"><h2>Period-over-Period Comparison</h2><p class="message" id="comparisonLabel">Comparing selected period with the previous equal-length period.</p><div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))"><div class="card"><div class="label">Quotation Volume Change</div><div class="metric" id="comparisonQuotes">—</div></div><div class="card"><div class="label">Awarded Quotes Change</div><div class="metric" id="comparisonAwarded">—</div></div><div class="card"><div class="label">Quoted Value Change</div><div class="metric" id="comparisonValue">—</div></div></div></section>
+
+<div class="grid">
+<section class="panel"><h2>Quotation Status</h2><div id="statusChart"></div></section>
+<section class="panel"><h2>RFQ Status</h2><div id="rfqChart"></div></section>
+</div>
+<div class="grid" style="margin-top:16px">
+<section class="panel"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><h2 style="margin:0">Monthly Quotation Submissions</h2><select id="monthlyTrendRange" aria-label="Monthly trend range" style="padding:8px"><option value="6">Last 6 months</option><option value="12" selected>Last 12 months</option><option value="all">All months</option></select></div><div id="monthlyChart" style="margin-top:12px"></div></section>
+<section class="panel"><h2>Top Suppliers by Responses</h2><div id="supplierChart"></div></section>
+</div>
+<section class="panel" style="margin-top:16px"><h2>Recent Activity</h2><div class="scroll"><table><thead><tr><th>Activity</th><th>Supplier</th><th>RFQ</th><th>Date</th></tr></thead><tbody id="activity"></tbody></table></div></section>
+<section class="panel"><h2>Recently Submitted Quotations</h2>
+<div class="register-tools" style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 16px">
+<input id="recentSearch" type="search" placeholder="Search RFQ, supplier, quote number..." style="flex:1;min-width:220px;padding:11px;border-radius:10px;background:#071426;color:#edf5ff;border:1px solid #294465">
+<select id="recentStatus" style="padding:11px;border-radius:10px;background:#071426;color:#edf5ff;border:1px solid #294465"><option value="">All statuses</option><option>Received</option><option>Approved</option><option>Rejected</option><option>Awarded</option></select><input id="recentFrom" type="date" aria-label="Submitted from" title="Submitted from" style="padding:11px;border-radius:10px;background:#071426;color:#edf5ff;border:1px solid #294465"><input id="recentTo" type="date" aria-label="Submitted to" title="Submitted to" style="padding:11px;border-radius:10px;background:#071426;color:#edf5ff;border:1px solid #294465"><button class="secondary" id="clearRecentFilters" type="button">Clear filters</button><span id="recentCount" class="message">— results</span>
+<button class="secondary" id="exportRecent">Export filtered CSV</button>
+</div><div class="scroll"><table><thead><tr><th>RFQ</th><th>Supplier</th><th>Quote No.</th><th>Amount incl. tax</th><th>Status</th><th>Submitted</th></tr></thead><tbody id="recent"></tbody></table></div><div class="message" id="msg"><span id="dashboardRefreshTime" style="margin-left:8px;color:#9db0ca"></span></div></section>
+<footer><small>Copyright © Shady Anany</small></footer></main>
+<script>
+const token=localStorage.getItem("sqAccessToken")||localStorage.getItem("sq_token");if(!token)location.href="/";const $=id=>document.getElementById(id);
+async function api(path){let r=await fetch("/api"+path,{headers:{"Authorization":"Bearer "+token}});if(!r.ok)throw Error(await r.text()||r.status);return r.json()}
+async function loadUserProfile(){try{const user=await api("/auth/me");$("userName").textContent=user.displayName||user.username||"Signed in";$("userRole").textContent=user.role||"User";}catch(e){$("userName").textContent="User profile unavailable";$("userRole").textContent="—";}}
+$("logoutBtn").addEventListener("click",()=>{localStorage.removeItem("sqAccessToken");localStorage.removeItem("sq_token");localStorage.removeItem("sq_user");localStorage.removeItem("sq_role");location.href="/";});
+async function loadUnreadCount(){try{const data=await api("/notifications/unread-count");const badge=$("unreadBadge");const count=Number(data.count||0);badge.textContent=count>99?"99+":String(count);badge.style.display=count>0?"inline-block":"none";}catch(e){console.warn("Unread notifications count unavailable:",e.message)}}
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let allRecent=[];
+let allQuotations=[],allRfqs=[];
+function periodQuotations(){const period=$("analyticsPeriod").value;if(period==="all")return allQuotations;if(period==="custom"){const start=$("analyticsStart").value,end=$("analyticsEnd").value;if(!start||!end||start>end)return [];const from=new Date(start+"T00:00:00"),to=new Date(end+"T23:59:59.999");return allQuotations.filter(q=>{const d=new Date(q.submittedUtc);return !isNaN(d)&&d>=from&&d<=to})}const cutoff=new Date();cutoff.setDate(cutoff.getDate()-Number(period));return allQuotations.filter(q=>{const d=new Date(q.submittedUtc);return !isNaN(d)&&d>=cutoff})}
+$("analyticsPeriod").addEventListener("change",()=>{const custom=$("analyticsPeriod").value==="custom";$("analyticsStart").style.display=custom?"inline-block":"none";$("analyticsEnd").style.display=custom?"inline-block":"none";$("applyAnalyticsRange").style.display=custom?"inline-block":"none";if(!custom)renderDashboardAnalytics();});
+$("applyAnalyticsRange").addEventListener("click",()=>{if($("analyticsStart").value&&$("analyticsEnd").value&&$("analyticsStart").value<=$("analyticsEnd").value)renderDashboardAnalytics();else $("periodLabel").textContent="Choose a valid start and end date."});
+$("exportAnalytics").addEventListener("click",()=>{const qs=periodQuotations();const reviewed=qs.filter(q=>["Approved","Rejected","Awarded"].includes(q.status)).length;const summary=[["Dashboard Analytics Summary","Value"],["Period",$("periodLabel").textContent],["Total quotations",qs.length],["Received",qs.filter(q=>q.status==="Received").length],["Approved",qs.filter(q=>q.status==="Approved").length],["Rejected",qs.filter(q=>q.status==="Rejected").length],["Awarded",qs.filter(q=>q.awarded||q.status==="Awarded").length],["Approval rate",qs.length?Math.round(reviewed/qs.length*100)+"%":"0%"]];const grouped={};qs.forEach(q=>{const name=q.supplier?.name||("Supplier "+q.supplierId);if(!grouped[name])grouped[name]={count:0,received:0,approved:0,rejected:0,awarded:0,total:0};const s=grouped[name];s.count++;if(q.status==="Received")s.received++;if(q.status==="Approved")s.approved++;if(q.status==="Rejected")s.rejected++;if(q.awarded||q.status==="Awarded")s.awarded++;s.total+=amount(q)});const detail=[["Supplier","Quotation Count","Received","Approved","Rejected","Awarded","Total Quoted Value","Average Quote Value"],...Object.entries(grouped).sort((a,b)=>b[1].count-a[1].count).map(([name,s])=>[name,s.count,s.received,s.approved,s.rejected,s.awarded,s.total.toFixed(2),(s.count?s.total/s.count:0).toFixed(2)])];const rows=[...summary,[],["Supplier Breakdown"],...detail];const csv=rows.map(r=>r.map(csvCell).join(",")).join("\\r\\n");const blob=new Blob(["\\uFEFF"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="dashboard-analytics.csv";a.click();URL.revokeObjectURL(url);});
+function filteredRecent(){let term=$("recentSearch").value.trim().toLowerCase(),status=$("recentStatus").value,from=$("recentFrom").value,to=$("recentTo").value;return allRecent.filter(q=>{let text=[q.rfq?.rfqNumber,q.supplier?.name,q.quoteNumber,q.status].join(" ").toLowerCase(),raw=q.submittedUtc||q.createdUtc||"",day=raw?String(raw).slice(0,10):"";return(!term||text.includes(term))&&(!status||q.status===status)&&(!from||(day&&day>=from))&&(!to||(day&&day<=to))})}
+function renderRecent(){let rows=filteredRecent();$("recentCount").textContent=rows.length+" result"+(rows.length===1?"":"s");$("recent").innerHTML=rows.map(q=>`<tr><td>${esc(q.rfq?.rfqNumber||q.rfqId)}</td><td>${esc(q.supplier?.name||q.supplierId)}</td><td>${esc(q.quoteNumber)}</td><td>${amount(q).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})} ${esc(q.currency)}</td><td>${esc(q.status)}${q.awarded?" ★":""}</td><td>${new Date(q.submittedUtc).toLocaleString()}</td></tr>`).join("")||'<tr><td colspan="6">No matching quotations.</td></tr>'}
+function csvCell(v){return '"'+String(v??"").replace(/"/g,'""')+'"'}
+$("recentSearch").addEventListener("input",renderRecent);$("recentStatus").addEventListener("change",renderRecent);$("recentFrom").addEventListener("change",renderRecent);$("recentTo").addEventListener("change",renderRecent);$("clearRecentFilters").addEventListener("click",()=>{$("recentSearch").value="";$("recentStatus").value="";$("recentFrom").value="";$("recentTo").value="";renderRecent()});
+$("exportRecent").addEventListener("click",()=>{let rows=filteredRecent(),head=["RFQ","Supplier","Quote No","Amount incl tax","Currency","Status","Submitted"];let lines=[head,...rows.map(q=>[q.rfq?.rfqNumber||q.rfqId,q.supplier?.name||q.supplierId,q.quoteNumber,amount(q),q.currency,q.status,(q.submittedUtc||q.createdUtc?new Date(q.submittedUtc||q.createdUtc).toISOString():"")])].map(row=>row.map(csvCell).join(",")).join("\\r\\n");let blob=new Blob(["\\uFEFF"+lines],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="recent-quotations.csv";a.click();URL.revokeObjectURL(url)});
+function amount(q){return(q.lines||[]).reduce((a,l)=>a+Number(l.quantity)*Number(l.unitPrice)*(1+Number(l.taxPercent||0)/100),0)}
+function chart(el,arr,colors){let max=Math.max(1,...arr.map(x=>x.count));$(el).innerHTML=arr.map((x,i)=>`<div class="barrow"><span>${esc(x.label)}</span><div class="track"><div class="bar ${colors[i%colors.length]}" style="width:${x.count/max*100}%"></div></div><b>${x.count}</b></div>`).join("")||"<p>No data yet.</p>"}
+function comparisonRange(){const mode=$("analyticsPeriod").value;let start,end;if(mode==="custom"){if(!$("analyticsStart").value||!$("analyticsEnd").value||$("analyticsStart").value>$("analyticsEnd").value)return null;start=new Date($("analyticsStart").value+"T00:00:00");end=new Date($("analyticsEnd").value+"T23:59:59.999")}else if(mode==="all"){const dates=allQuotations.map(q=>new Date(q.submittedUtc)).filter(d=>!isNaN(d)).sort((a,b)=>a-b);if(!dates.length)return null;end=dates[dates.length-1];start=new Date(end);start.setDate(start.getDate()-29)}else{end=new Date();start=new Date();start.setDate(start.getDate()-Number(mode)+1);start.setHours(0,0,0,0)}const duration=end-start+1,prevEnd=new Date(start.getTime()-1),prevStart=new Date(prevEnd.getTime()-duration+1);return{start,end,prevStart,prevEnd}}
+function pctChange(current,previous){if(previous===0)return current===0?"0%":"New";let v=Math.round((current-previous)/previous*100);return(v>0?"+":"")+v+"%"}
+function renderComparison(){const r=comparisonRange();if(!r){["comparisonQuotes","comparisonAwarded","comparisonValue"].forEach(id=>$(id).textContent="—");$("comparisonLabel").textContent="No valid date range to compare.";return}const inRange=(q,a,b)=>{const d=new Date(q.submittedUtc);return !isNaN(d)&&d>=a&&d<=b};const cur=allQuotations.filter(q=>inRange(q,r.start,r.end)),prev=allQuotations.filter(q=>inRange(q,r.prevStart,r.prevEnd));const awarded=arr=>arr.filter(q=>q.awarded||q.status==="Awarded").length;const value=arr=>arr.reduce((sum,q)=>sum+amount(q),0);$("comparisonQuotes").textContent=pctChange(cur.length,prev.length);$("comparisonAwarded").textContent=pctChange(awarded(cur),awarded(prev));$("comparisonValue").textContent=pctChange(value(cur),value(prev));$("comparisonLabel").textContent=`${r.start.toLocaleDateString()} – ${r.end.toLocaleDateString()} vs ${r.prevStart.toLocaleDateString()} – ${r.prevEnd.toLocaleDateString()}`}
+function renderMonthlyTrend(monthMap){const keys=Object.keys(monthMap).sort();const mode=$("monthlyTrendRange")?.value||"12";const selected=mode==="all"?keys:keys.slice(-Number(mode));chart("monthlyChart",selected.map(k=>({label:k,count:monthMap[k]})),["","green","amber"])}
+$("monthlyTrendRange")?.addEventListener("change",()=>{const map={};allQuotations.forEach(q=>{const d=new Date(q.submittedUtc);if(!isNaN(d)){const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");map[k]=(map[k]||0)+1}});renderMonthlyTrend(map)});
+function renderDashboardAnalytics(){const qs=periodQuotations();renderComparison();const period=$("analyticsPeriod").value;$("periodLabel").textContent=period==="all"?"Showing all quotation data":period==="custom"?`Custom: ${$("analyticsStart").value} to ${$("analyticsEnd").value}`:`Showing submissions in the last ${period} days`;const reviewed=qs.filter(q=>["Approved","Rejected","Awarded"].includes(q.status)).length;$("quotes").textContent=qs.length;$("approved").textContent=qs.filter(q=>q.status==="Approved").length;$("awarded").textContent=qs.filter(q=>q.awarded||q.status==="Awarded").length;$("pending").textContent=qs.filter(q=>q.status==="Received").length;$("approvalRate").textContent=(qs.length?Math.round(reviewed/qs.length*100):0)+"%";chart("statusChart",["Received","Approved","Rejected","Awarded"].map(label=>({label,count:qs.filter(q=>q.status===label).length})),["","green","red","amber"]);const monthMap={};qs.forEach(q=>{const d=new Date(q.submittedUtc);if(!isNaN(d)){const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");monthMap[key]=(monthMap[key]||0)+1}});renderMonthlyTrend(monthMap);const supplierMap={};qs.forEach(q=>{const name=q.supplier?.name||("Supplier "+q.supplierId);supplierMap[name]=(supplierMap[name]||0)+1});chart("supplierChart",Object.entries(supplierMap).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([label,count])=>({label,count})),["","green","amber"]);const sorted=[...qs].sort((a,b)=>new Date(b.submittedUtc)-new Date(a.submittedUtc));allRecent=sorted.slice(0,100);renderRecent();$("activity").innerHTML=sorted.slice(0,8).map(q=>`<tr><td>${esc(q.status||"Submitted")}</td><td>${esc(q.supplier?.name||q.supplierId)}</td><td>${esc(q.rfq?.rfqNumber||q.rfqId)}</td><td>${new Date(q.submittedUtc).toLocaleString()}</td></tr>`).join("")||'<tr><td colspan="4">No activity yet.</td></tr>';}
+async function load(){try{let [ss,rs,qs]=await Promise.all([api("/suppliers"),api("/rfqs"),api("/quotations")]);let active=ss.filter(s=>s.isActive),open=rs.filter(r=>r.status==="Open");allQuotations=qs;allRfqs=rs;renderDashboardAnalytics();$("suppliers").textContent=active.length;$("rfqs").textContent=rs.length;$("open").textContent=open.length;$("quotes").textContent=qs.length;$("approved").textContent=qs.filter(q=>q.status==="Approved").length;$("awarded").textContent=qs.filter(q=>q.awarded||q.status==="Awarded").length;
+const pending=qs.filter(q=>q.status==="Received").length;
+$("pending").textContent=pending;
+const reviewed=qs.filter(q=>["Approved","Rejected","Awarded"].includes(q.status)).length;
+$("approvalRate").textContent=(qs.length?Math.round(reviewed/qs.length*100):0)+"%";
+let statuses=["Received","Approved","Rejected","Awarded"].map(label=>({label,count:qs.filter(q=>q.status===label).length}));chart("statusChart",statuses,["","green","red","amber"]);
+let rfqStatuses=[...new Set(rs.map(r=>r.status))].map(label=>({label,count:rs.filter(r=>r.status===label).length}));chart("rfqChart",rfqStatuses,["","green","amber","red"]);
+const sorted=[...qs].sort((a,b)=>new Date(b.submittedUtc)-new Date(a.submittedUtc));
+allRecent=sorted.slice(0,100);renderRecent();
+const monthMap={};qs.forEach(q=>{const d=new Date(q.submittedUtc);if(!isNaN(d)){const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");monthMap[key]=(monthMap[key]||0)+1}});
+renderMonthlyTrend(monthMap);
+const supplierMap={};qs.forEach(q=>{const name=q.supplier?.name||("Supplier "+q.supplierId);supplierMap[name]=(supplierMap[name]||0)+1});
+const topSuppliers=Object.entries(supplierMap).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([label,count])=>({label,count}));chart("supplierChart",topSuppliers,["","green","amber"]);
+$("activity").innerHTML=sorted.slice(0,8).map(q=>`<tr><td>${esc(q.status||"Submitted")}</td><td>${esc(q.supplier?.name||q.supplierId)}</td><td>${esc(q.rfq?.rfqNumber||q.rfqId)}</td><td>${new Date(q.submittedUtc).toLocaleString()}</td></tr>`).join("")||'<tr><td colspan="4">No activity yet.</td></tr>';
+$("msg").textContent="Dashboard refreshed. Note: totals should be compared only within the same currency.";$("dashboardRefreshTime").textContent="Last successful refresh: "+new Date().toLocaleString()}catch(e){$("msg").textContent="Dashboard load failed: "+e.message;$("dashboardRefreshTime").textContent="Refresh failed at: "+new Date().toLocaleString()}}
+load();loadUnreadCount();loadUserProfile();
+</script><a id="globalMainAppButton" href="/" title="Return to Main App" style="position:fixed;left:18px;bottom:18px;z-index:99999;display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:10px;background:#174ea6;color:#fff;text-decoration:none;font:600 14px Arial,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.25)">⌂ Main App</a></body></html>

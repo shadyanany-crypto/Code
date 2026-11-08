@@ -1,0 +1,119 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Portal | Supplier Quotation</title>
+<style>
+:root{--bg:#0b1220;--panel:#121e31;--line:#263650;--text:#eaf2ff;--muted:#9db0ca;--blue:#3b82f6;--gold:#d5a21b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,Segoe UI,Arial;padding:22px}main{max-width:1100px;margin:auto}.head{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}h1{margin:0}p{color:var(--muted)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:20px;margin:18px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.tile{background:#0b1526;border:1px solid var(--line);border-radius:12px;padding:17px}.tile h3{margin:0 0 8px}.tile p{min-height:40px}.tile a,button{display:inline-block;background:var(--blue);color:white;border:0;border-radius:9px;padding:10px 14px;text-decoration:none;cursor:pointer;font-weight:600}.secondary{background:#25364f}.tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#1d3552;color:#bcd7ff;font-size:12px}#status{color:#9db0ca}
+
+/* Phase 13 — Premium dark-blue UI refresh */
+:root{
+ --bg:#060d19!important;--panel:#0d1a2d!important;--line:#1d3554!important;
+ --text:#edf5ff!important;--muted:#91a8c6!important;--blue:#087cff!important;
+ --green:#10b981!important;--amber:#f59e0b!important;--red:#ef4444!important;
+}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 12% -10%,#102b50 0,transparent 36%),radial-gradient(ellipse at 100% 0,#0a2140 0,transparent 30%),#060d19!important;color:#edf5ff!important;font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif!important}
+main,.wrap{max-width:1320px!important}
+h1{font-size:clamp(24px,3vw,34px)!important;letter-spacing:-.6px;font-weight:750!important}
+h2{letter-spacing:-.3px}
+p,small,.muted,.sub{color:#91a8c6!important}
+.panel,.tile,.cards>div,.card{background:linear-gradient(145deg,rgba(15,31,52,.97),rgba(9,20,36,.98))!important;border:1px solid #1d3554!important;border-radius:16px!important;box-shadow:0 12px 32px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.025)!important}
+input,select,textarea{background:#071426!important;border:1px solid #294465!important;color:#edf5ff!important;border-radius:10px!important;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:#1687ff!important;box-shadow:0 0 0 3px rgba(8,124,255,.16)!important}
+button,.btn,.actions a,.head a,header a{border-radius:10px!important;transition:transform .15s,filter .15s,background .15s}
+button:not(.secondary):not(.btn2){background:linear-gradient(135deg,#087cff,#075bd4)!important;color:#fff!important;box-shadow:0 5px 15px rgba(8,124,255,.16)}
+button:hover,a:hover{filter:brightness(1.13);transform:translateY(-1px)}
+.secondary,.btn2{background:#172b45!important;color:#dcecff!important;border:1px solid #294465!important}
+a{color:#7fc0ff}
+table{border-collapse:separate!important;border-spacing:0!important;border:1px solid #1d3554!important;border-radius:12px!important;overflow:hidden}
+th{background:#10243d!important;color:#d9eaff!important;font-weight:650!important}
+td,th{border-bottom:1px solid #1b304b!important;padding:12px!important}
+tr:hover td{background:rgba(17,52,88,.22)}
+hr{border:0;border-top:1px solid #1d3554}
+.badge,.status{border-radius:999px!important}
+@media(max-width:700px){
+ body{padding:12px!important}
+ main,.wrap{padding-left:0!important;padding-right:0!important}
+ .panel{padding:14px!important;margin:12px 0!important}
+ table{min-width:680px}
+ h1{font-size:24px!important}
+}
+
+</style><style>
+/* Phase 14 — Dashboard and Portal visual polish */
+body:has(.cards) .cards{gap:16px}
+body:has(.cards) .card{position:relative;overflow:hidden;padding:20px 21px!important;min-height:112px}
+body:has(.cards) .card:before{content:"";position:absolute;right:-34px;top:-42px;width:110px;height:110px;border-radius:50%;background:rgba(8,124,255,.09);pointer-events:none}
+.metric{font-size:clamp(28px,3vw,36px)!important;line-height:1.15;color:#f5f9ff!important;letter-spacing:-1px}
+.label{font-size:12px!important;letter-spacing:.5px;text-transform:uppercase;color:#9bb4d2!important;font-weight:650}
+.head{padding-bottom:6px}
+.head h1{background:linear-gradient(90deg,#f4f8ff,#8fc7ff);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.actions button{border:1px solid rgba(88,145,210,.22)!important}
+.grid{gap:16px!important}
+.panel{padding:20px!important}
+.panel h2{margin-top:0;color:#e7f2ff!important}
+.tile{background:linear-gradient(150deg,#10233c,#0a1729)!important;transition:transform .18s,border-color .18s,box-shadow .18s}
+.tile:hover{transform:translateY(-3px);border-color:#2f75c4!important;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.tile h3{font-size:17px!important;color:#f0f7ff}
+.tag{border:1px solid #2b4b70!important;background:#102b49!important;color:#9bcaff!important}
+table{width:100%}
+@media(max-width:780px){
+ .grid{grid-template-columns:1fr!important}
+ .head{align-items:flex-start!important}
+ .actions{width:100%}
+ .actions button{flex:1}
+}
+</style></head><body><main>
+<header class="head"><div><h1>My Portal</h1><p>Personal account and role-based workspace</p></div><div id="headerActions" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<label id="langLabel" for="portalLanguage">Language</label><select id="portalLanguage" aria-label="Interface language"><option value="en">English</option><option value="ar">العربية</option></select>
+<label id="themeLabel" for="portalTheme">Theme</label><select id="portalTheme" aria-label="Interface theme"><option value="navy">Light (Default)</option><option value="dark">Dark</option><option value="purple">Purple</option></select>
+<button class="secondary" id="logout">Sign out</button></div></header>
+<section class="panel"><div class="head"><div><h2 id="display">Loading profile…</h2><p id="username"></p></div><span class="tag" id="role"></span></div><p id="account"></p></section>
+<section class="panel"><h2>Workspace</h2><div class="grid" id="links"></div><p id="status"></p></section>
+</main><script>
+const portalText={
+en:{title:'My Portal',subtitle:'Personal account and role-based workspace',profile:'Loading profile…',workspace:'Workspace',signout:'Sign out',language:'Language',theme:'Theme',status:'Your workspace sections are configured by your administrator.',welcome:'Welcome, ',username:'Username: ',created:'Account created ',active:'Active',disabled:'Disabled',portalDisabled:'Portal access is disabled',noAccess:'Your administrator has not granted access to My Portal.',open:'Open',descriptions:{'Dashboard':'View your procurement overview.','Approvals':'Review quotations and award vendors.','Quotation Entry':'Enter supplier quotation details.','Reports & Export':'Export business reports.','Notifications':'View alerts and read status.','Audit Log':'Inspect tracked system actions.','Admin Console':'Manage user accounts and portal access.'}},
+ar:{title:'بوابة المستخدم',subtitle:'الحساب الشخصي ومساحة العمل حسب الصلاحيات',profile:'جاري تحميل الملف الشخصي…',workspace:'مساحة العمل',signout:'تسجيل الخروج',language:'اللغة',theme:'المظهر',status:'أقسام مساحة العمل محددة بواسطة مسؤول النظام.',welcome:'أهلاً، ',username:'اسم المستخدم: ',created:'تاريخ إنشاء الحساب ',active:'نشط',disabled:'معطل',portalDisabled:'الوصول إلى البوابة معطل',noAccess:'مسؤول النظام لم يمنحك صلاحية دخول البوابة.',open:'فتح',descriptions:{'Dashboard':'عرض ملخص المشتريات.','Approvals':'مراجعة عروض الأسعار والترسية.','Quotation Entry':'إدخال تفاصيل عروض الموردين.','Reports & Export':'تصدير تقارير العمل.','Notifications':'عرض التنبيهات وحالة القراءة.','Audit Log':'مراجعة سجل العمليات.','Admin Console':'إدارة الحسابات وصلاحيات البوابة.'}}};
+function readMainSettings(){let settings={};try{settings=JSON.parse(localStorage.getItem('rfqAppSettings')||'{}')}catch{};return {...settings,language:settings.language||localStorage.getItem('rfqAppLanguage')||'en',theme:settings.theme||'navy'};}
+function applyPortalPrefs(language,theme){
+ const t=portalText[language]||portalText.en;document.documentElement.lang=language;document.documentElement.dir=language==='ar'?'rtl':'ltr';document.body.dir=language==='ar'?'rtl':'ltr';
+ document.getElementById('portalLanguage').value=language;document.getElementById('portalTheme').value=theme;
+ document.querySelector('header h1').textContent=t.title;document.querySelector('header p').textContent=t.subtitle;document.getElementById('display').textContent=t.profile;document.querySelector('#links').closest('.panel').querySelector('h2').textContent=t.workspace;document.getElementById('logout').textContent=t.signout;document.getElementById('langLabel').textContent=t.language;document.getElementById('themeLabel').textContent=t.theme;
+ const dark=theme==='dark',purple=theme==='purple';document.body.style.background=purple?'radial-gradient(ellipse at 12% -10%,#39206c 0,transparent 38%),radial-gradient(ellipse at 100% 0,#251344 0,transparent 34%),#0b1020':dark?'radial-gradient(ellipse at 12% -10%,#102b50 0,transparent 36%),radial-gradient(ellipse at 100% 0,#0a2140 0,transparent 30%),#060d19':'#f2f6fb';document.body.style.color=(dark||purple)?'#edf5ff':'#203955';
+ document.documentElement.style.setProperty('--panel',purple?'#17152b':dark?'#0d1a2d':'#ffffff');document.documentElement.style.setProperty('--line',purple?'#382957':dark?'#1d3554':'#dce5ee');document.documentElement.style.setProperty('--text',(dark||purple)?'#edf5ff':'#203955');document.documentElement.style.setProperty('--muted',purple?'#b9acd9':dark?'#91a8c6':'#61758d');document.documentElement.style.setProperty('--blue',purple?'#7847e8':dark?'#087cff':'#376aa8');
+ document.querySelectorAll('.panel,.tile').forEach(el=>{el.style.background=purple?'linear-gradient(145deg,#1b1732,#151326)':dark?'linear-gradient(145deg,rgba(15,31,52,.97),rgba(9,20,36,.98))':'#fff';el.style.borderColor=purple?'#49366d':dark?'#1d3554':'#dce5ee';el.style.color=(dark||purple)?'#edf5ff':'#203955';});document.querySelectorAll('.tile h3').forEach(el=>el.style.color=(dark||purple)?'#f0f7ff':'#203955');document.getElementById('status').textContent=t.status;
+}
+function savePortalPrefs(){const language=document.getElementById('portalLanguage').value,theme=document.getElementById('portalTheme').value;let settings=readMainSettings();settings.language=language;settings.theme=theme;localStorage.setItem('rfqAppSettings',JSON.stringify(settings));localStorage.setItem('rfqAppLanguage',language);applyPortalPrefs(language,theme);}
+document.getElementById('portalLanguage').addEventListener('change',savePortalPrefs);document.getElementById('portalTheme').addEventListener('change',savePortalPrefs);
+window.addEventListener('storage',e=>{if(e.key==='rfqAppSettings'||e.key==='rfqAppLanguage'){const prefs=readMainSettings();applyPortalPrefs(prefs.language,prefs.theme);}});
+const initialPrefs=readMainSettings();applyPortalPrefs(initialPrefs.language,initialPrefs.theme);
+const token=localStorage.getItem('sqAccessToken')||localStorage.getItem('sq_token');
+if(!token)location.href='index.html';
+const moduleTiles={
+'Dashboard':['Dashboard','View your procurement overview.','dashboard.html'],
+'Approvals':['Approvals','Review quotations and award vendors.','approvals.html'],
+'Price Comparison':['Price Comparison','Compare submitted supplier quotations.','comparison.html'],
+'Quotation Entry':['Quotation Entry','Enter supplier quotation details.','comparison.html'],
+'Reports & Export':['Reports & Export','Export business reports.','reports.html'],
+'Notifications':['Notifications','View alerts and read status.','notifications.html'],
+'Audit Log':['Audit Log','Inspect tracked system actions.','audit.html'],
+'Admin Console':['Admin Console','Manage user accounts and portal access.','admin.html']
+};
+async function load(){
+ try{
+  let r=await fetch('/api/auth/me',{headers:{Authorization:'Bearer '+token}});
+  if(!r.ok)throw Error('Unable to load profile ('+r.status+')');
+  let u=await r.json();
+  if(!u.portalAccess){const t=portalText[document.getElementById('portalLanguage').value]||portalText.en;document.getElementById('display').textContent=t.portalDisabled;document.getElementById('status').textContent=t.noAccess;document.getElementById('links').innerHTML='';return;}
+  const t=portalText[document.getElementById('portalLanguage').value]||portalText.en;display.textContent=t.welcome+u.displayName;username.textContent=t.username+u.username;role.textContent=u.role;
+  account.textContent=t.created+new Date(u.createdUtc).toLocaleDateString()+' · '+(u.isActive?t.active:t.disabled);
+  let modules=[];try{modules=JSON.parse(u.portalModulesJson||'[]')}catch{}
+  if(u.role==='Admin' && !modules.includes('Admin Console')) modules.push('Admin Console');
+  const arr=modules.filter(m=>moduleTiles[m] && (m!=='Admin Console'||u.role==='Admin')).map(m=>moduleTiles[m]);
+  links.innerHTML=arr.map(x=>`<article class="tile"><h3>${x[0]}</h3><p>${t.descriptions[x[0]]||x[1]}</p><a href="${x[2]}">${t.open}</a></article>`).join('');
+  const dash=arr.find(x=>x[0]==='Dashboard');
+  if(dash)headerActions.insertAdjacentHTML('afterbegin',`<a class="tile" style="padding:10px 14px;text-decoration:none;color:white" href="dashboard.html">Dashboard</a> `);
+  status.textContent=t.status;
+ }catch(e){status.textContent=e.message}
+}
+document.getElementById('logout').onclick=()=>{localStorage.removeItem('sqAccessToken');localStorage.removeItem('sq_token');localStorage.removeItem('sq_user');localStorage.removeItem('sq_role');location.href='index.html'};
+load();
+</script><a id="globalMainAppButton" href="/" title="Return to Main App" style="position:fixed;left:18px;bottom:18px;z-index:99999;display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:10px;background:#174ea6;color:#fff;text-decoration:none;font:600 14px Arial,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.25)">⌂ Main App</a></body></html>

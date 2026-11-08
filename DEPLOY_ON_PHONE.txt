@@ -1,0 +1,10 @@
+Supplier Quotation web frontend package
+
+Deploy through GitHub Pages using your Android phone:
+1. Create a new PRIVATE GitHub repository (GitHub Pages for private repos may require a paid plan; easiest is a public repo but do not publish confidential data).
+2. Upload all files in this folder to repository root. index.html must be at root.
+3. Repository Settings > Pages > Deploy from a branch > main > /(root) > Save.
+4. Wait for Pages to publish; open the published site URL on your Android Chrome.
+
+Important limitations:
+This package is the frontend only. Calls to /api/health, /api/shared/state and /api/auth/login require the ASP.NET backend and will not work on static GitHub Pages. This allows viewing/trying the UI, but full RFQ persistence, login, approval, and database features require the API hosted and configured. Do not use real confidential supplier or quotation data on a public demo.

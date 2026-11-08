@@ -1,0 +1,60 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Notifications</title><style>body{margin:0;background:#0b1220;color:#e8eef8;font:15px Segoe UI,Arial}.wrap{max-width:900px;margin:30px auto;padding:0 18px}header{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.panel{margin-top:20px;background:#111c30;border:1px solid #263650;border-radius:14px;padding:18px}.item{padding:14px;border-bottom:1px solid #263650;display:flex;justify-content:space-between;gap:10px}.unread{background:#0b1424}h3{margin:0 0 6px}.muted{color:#9fb0c8}button,a{border:1px solid #263650;border-radius:8px;padding:10px 12px;background:#1b2b44;color:#e8eef8;text-decoration:none;cursor:pointer}
+/* Phase 13 — Premium dark-blue UI refresh */
+:root{
+ --bg:#060d19!important;--panel:#0d1a2d!important;--line:#1d3554!important;
+ --text:#edf5ff!important;--muted:#91a8c6!important;--blue:#087cff!important;
+ --green:#10b981!important;--amber:#f59e0b!important;--red:#ef4444!important;
+}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 12% -10%,#102b50 0,transparent 36%),radial-gradient(ellipse at 100% 0,#0a2140 0,transparent 30%),#060d19!important;color:#edf5ff!important;font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif!important}
+main,.wrap{max-width:1320px!important}
+h1{font-size:clamp(24px,3vw,34px)!important;letter-spacing:-.6px;font-weight:750!important}
+h2{letter-spacing:-.3px}
+p,small,.muted,.sub{color:#91a8c6!important}
+.panel,.tile,.cards>div,.card{background:linear-gradient(145deg,rgba(15,31,52,.97),rgba(9,20,36,.98))!important;border:1px solid #1d3554!important;border-radius:16px!important;box-shadow:0 12px 32px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.025)!important}
+input,select,textarea{background:#071426!important;border:1px solid #294465!important;color:#edf5ff!important;border-radius:10px!important;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:#1687ff!important;box-shadow:0 0 0 3px rgba(8,124,255,.16)!important}
+button,.btn,.actions a,.head a,header a{border-radius:10px!important;transition:transform .15s,filter .15s,background .15s}
+button:not(.secondary):not(.btn2){background:linear-gradient(135deg,#087cff,#075bd4)!important;color:#fff!important;box-shadow:0 5px 15px rgba(8,124,255,.16)}
+button:hover,a:hover{filter:brightness(1.13);transform:translateY(-1px)}
+.secondary,.btn2{background:#172b45!important;color:#dcecff!important;border:1px solid #294465!important}
+a{color:#7fc0ff}
+table{border-collapse:separate!important;border-spacing:0!important;border:1px solid #1d3554!important;border-radius:12px!important;overflow:hidden}
+th{background:#10243d!important;color:#d9eaff!important;font-weight:650!important}
+td,th{border-bottom:1px solid #1b304b!important;padding:12px!important}
+tr:hover td{background:rgba(17,52,88,.22)}
+hr{border:0;border-top:1px solid #1d3554}
+.badge,.status{border-radius:999px!important}
+@media(max-width:700px){
+ body{padding:12px!important}
+ main,.wrap{padding-left:0!important;padding-right:0!important}
+ .panel{padding:14px!important;margin:12px 0!important}
+ table{min-width:680px}
+ h1{font-size:24px!important}
+}
+
+</style><style>
+/* Phase 14 — Dashboard and Portal visual polish */
+body:has(.cards) .cards{gap:16px}
+body:has(.cards) .card{position:relative;overflow:hidden;padding:20px 21px!important;min-height:112px}
+body:has(.cards) .card:before{content:"";position:absolute;right:-34px;top:-42px;width:110px;height:110px;border-radius:50%;background:rgba(8,124,255,.09);pointer-events:none}
+.metric{font-size:clamp(28px,3vw,36px)!important;line-height:1.15;color:#f5f9ff!important;letter-spacing:-1px}
+.label{font-size:12px!important;letter-spacing:.5px;text-transform:uppercase;color:#9bb4d2!important;font-weight:650}
+.head{padding-bottom:6px}
+.head h1{background:linear-gradient(90deg,#f4f8ff,#8fc7ff);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.actions button{border:1px solid rgba(88,145,210,.22)!important}
+.grid{gap:16px!important}
+.panel{padding:20px!important}
+.panel h2{margin-top:0;color:#e7f2ff!important}
+.tile{background:linear-gradient(150deg,#10233c,#0a1729)!important;transition:transform .18s,border-color .18s,box-shadow .18s}
+.tile:hover{transform:translateY(-3px);border-color:#2f75c4!important;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.tile h3{font-size:17px!important;color:#f0f7ff}
+.tag{border:1px solid #2b4b70!important;background:#102b49!important;color:#9bcaff!important}
+table{width:100%}
+@media(max-width:780px){
+ .grid{grid-template-columns:1fr!important}
+ .head{align-items:flex-start!important}
+ .actions{width:100%}
+ .actions button{flex:1}
+}
+</style></head><body><div class="wrap"><header><div><h1>Notifications</h1><div class="muted" id="count">Loading…</div></div><div><a href="dashboard.html">← Dashboard</a> <button id="reload">Refresh</button> <button id="all">Mark all read</button> <button id="clearRead">Clear read</button></div></header><section class="panel"><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px"><input id="search" placeholder="Search notifications…" style="flex:1;min-width:220px;background:#0d1728;color:#e8eef8;border:1px solid #26364f;border-radius:9px;padding:10px 12px"><select id="filter" style="background:#0d1728;color:#e8eef8;border:1px solid #26364f;border-radius:9px;padding:10px 12px"><option value="all">All notifications</option><option value="unread">Unread only</option><option value="read">Read only</option></select></div><div id="list"></div></section></div><script>const t=localStorage.getItem('sqAccessToken')||localStorage.getItem('sq_token');if(!t)location.href='index.html';const list=document.getElementById('list');let items=[];async function req(path,method='GET'){let r=await fetch(path,{method,headers:{Authorization:'Bearer '+t}});if(!r.ok)throw Error('API '+r.status);return r.json()}function esc(x){return String(x||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}function render(){let q=document.getElementById('search').value.trim().toLowerCase(),f=document.getElementById('filter').value;let filtered=items.filter(n=>(f==='all'||(f==='unread'&&!n.isRead)||(f==='read'&&n.isRead))&&(!q||(String(n.title||'')+' '+String(n.message||'')+' '+String(n.relatedType||'')).toLowerCase().includes(q)));list.innerHTML=filtered.length?filtered.map(n=>`<div class="item ${n.isRead?'':'unread'}"><div><h3>${esc(n.title)}</h3><div>${esc(n.message)}</div><small class="muted">${new Date(n.createdUtc).toLocaleString()}</small></div>${n.isRead?`<button onclick="removeOne(${n.id})">Delete</button>`:`<button onclick="mark(${n.id})">Mark read</button>`}</div>`).join(''):'<p class="muted">No notifications match your filters.</p>'}async function load(){try{let [data,u]=await Promise.all([req('/api/notifications'),req('/api/notifications/unread-count')]);items=data;document.getElementById('count').textContent=u.count+' unread · '+items.length+' recent';render()}catch(e){document.getElementById('count').textContent=e.message}}async function mark(id){await req('/api/notifications/'+id+'/read','PATCH');load()}async function removeOne(id){if(!confirm('Delete this notification?'))return;await req('/api/notifications/'+id,'DELETE');load()}document.getElementById('all').onclick=async()=>{await req('/api/notifications/read-all','PATCH');load()};document.getElementById('clearRead').onclick=async()=>{if(!confirm('Delete all read notifications?'))return;let result=await req('/api/notifications/read','DELETE');alert('Deleted '+result.deleted+' read notifications.');load()};document.getElementById('reload').onclick=load;document.getElementById('search').addEventListener('input',render);document.getElementById('filter').addEventListener('change',render);load();</script><a id="globalMainAppButton" href="/" title="Return to Main App" style="position:fixed;left:18px;bottom:18px;z-index:99999;display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:10px;background:#174ea6;color:#fff;text-decoration:none;font:600 14px Arial,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.25)">⌂ Main App</a></body></html>

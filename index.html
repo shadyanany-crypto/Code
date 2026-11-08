@@ -1,0 +1,1010 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Supplier Quotation App</title>
+<style>
+body{margin:0;background:#f4f6f8;color:#344256;font:14px Segoe UI,Arial}header{background:#203955;color:white;padding:20px}h1{margin:0}nav{position:fixed;left:0;top:0;bottom:0;width:var(--nav-width,190px);background:#e9eef4;padding:54px 10px 10px;display:flex;flex-direction:column;gap:8px;flex-wrap:nowrap;overflow-y:auto;z-index:20;box-sizing:border-box;transition:width .15s}
+nav button{width:100%;text-align:left;white-space:nowrap;display:flex;align-items:center;gap:11px}nav button .nav-icon{width:25px;min-width:25px;text-align:center;font-size:20px;line-height:1}
+body{--nav-width:190px}
+main,header{margin-left:var(--nav-width,190px);transition:margin-left .15s}
+header{padding:20px}
+#navResize{position:fixed;left:calc(var(--nav-width,190px) - 3px);top:0;bottom:0;width:6px;cursor:col-resize;z-index:22;background:transparent}
+#navResize:hover{background:#8eacd5}
+#navToggle{position:fixed;left:4px;top:5px;z-index:30;background:#203955;padding:7px 9px;border-radius:6px;font-size:18px}
+body.nav-hidden{--nav-width:0px}
+body.nav-hidden nav{width:0;padding:0;overflow:hidden}
+body.nav-hidden #navResize{left:0}
+body.nav-hidden main,body.nav-hidden header{margin-left:0}
+body.nav-hidden #navToggle{left:4px}button{border:0;border-radius:7px;padding:10px 14px;color:white;background:#203955;font-weight:bold;cursor:pointer}.active{background:#376aa8}.green{background:#248b61}.orange{background:#c47a25}.blue{background:#3b70ad}.red{background:#b82020}.purple{background:#5a4794}main{padding:14px}.panel{background:white;border:1px solid #d7e0e8;border-radius:14px;margin:16px 0;overflow:hidden}.panel h2{margin:0;padding:14px 20px;color:white;background:#203955}.inside{padding:18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.field label{display:block;font-weight:bold;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid #d5a21b;background:#fff7d8;border-radius:8px;box-sizing:border-box;font:inherit}.field textarea{min-height:65px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.scroll{overflow:auto}table{border-collapse:collapse;width:100%;min-width:650px}th{background:#203955;color:white}td,th{border:1px solid #c3d2e3;padding:8px;text-align:center}#comp th{position:relative;min-width:80px}#comp th .resize-handle{position:absolute;right:0;top:0;width:7px;height:100%;cursor:col-resize;user-select:none;background:transparent}#comp th .resize-handle:hover{background:#9bbbe8}.lowest{background:#d8f6d5;font-weight:bold}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.card{padding:14px;border:1px solid #d7e0e8;border-radius:10px;background:#fff}.hidden{display:none}.note{color:#61738a;font-size:12px}
+
+/* Phase 13 — Premium dark-blue UI refresh */
+:root{
+ --bg:#060d19!important;--panel:#0d1a2d!important;--line:#1d3554!important;
+ --text:#edf5ff!important;--muted:#91a8c6!important;--blue:#087cff!important;
+ --green:#10b981!important;--amber:#f59e0b!important;--red:#ef4444!important;
+}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 12% -10%,#102b50 0,transparent 36%),radial-gradient(ellipse at 100% 0,#0a2140 0,transparent 30%),#060d19!important;color:#edf5ff!important;font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif!important}
+main,.wrap{max-width:1320px!important}
+h1{font-size:clamp(24px,3vw,34px)!important;letter-spacing:-.6px;font-weight:750!important}
+h2{letter-spacing:-.3px}
+p,small,.muted,.sub{color:#91a8c6!important}
+.panel,.tile,.cards>div,.card{background:linear-gradient(145deg,rgba(15,31,52,.97),rgba(9,20,36,.98))!important;border:1px solid #1d3554!important;border-radius:16px!important;box-shadow:0 12px 32px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.025)!important}
+input,select,textarea{background:#071426!important;border:1px solid #294465!important;color:#edf5ff!important;border-radius:10px!important;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:#1687ff!important;box-shadow:0 0 0 3px rgba(8,124,255,.16)!important}
+button,.btn,.actions a,.head a,header a{border-radius:10px!important;transition:transform .15s,filter .15s,background .15s}
+button:not(.secondary):not(.btn2){background:linear-gradient(135deg,#087cff,#075bd4)!important;color:#fff!important;box-shadow:0 5px 15px rgba(8,124,255,.16)}
+button:hover,a:hover{filter:brightness(1.13);transform:translateY(-1px)}
+.secondary,.btn2{background:#172b45!important;color:#dcecff!important;border:1px solid #294465!important}
+a{color:#7fc0ff}
+table{border-collapse:separate!important;border-spacing:0!important;border:1px solid #1d3554!important;border-radius:12px!important;overflow:hidden}
+th{background:#10243d!important;color:#d9eaff!important;font-weight:650!important}
+td,th{border-bottom:1px solid #1b304b!important;padding:12px!important}
+tr:hover td{background:rgba(17,52,88,.22)}
+hr{border:0;border-top:1px solid #1d3554}
+.badge,.status{border-radius:999px!important}
+@media(max-width:700px){
+ body{padding:12px!important}
+ main,.wrap{padding-left:0!important;padding-right:0!important}
+ .panel{padding:14px!important;margin:12px 0!important}
+ table{min-width:680px}
+ h1{font-size:24px!important}
+}
+
+#nav .nav-portal-button{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:12px 16px;margin:0 0 6px;text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:10px;background:linear-gradient(135deg,#1473e6,#0756bd);color:#fff;font:inherit;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,70,160,.18)}#nav .nav-portal-button:hover{filter:brightness(1.08)}#nav .nav-portal-button .nav-icon{min-width:24px;text-align:center}</style>
+<style id="preview-cohesive-theme">
+:root{--navy:#203955;--navy-deep:#1d3552;--blue:#376aa8;--gold:#d5a21b;--cream:#fff7d8;--canvas:#f4f6f8;--line:#d7e0e8;--ink:#344256}
+body{background:var(--canvas);color:var(--ink);font-family:"Segoe UI",Arial,sans-serif;font-size:14px}
+header{background:var(--navy);color:#fff;padding:24px 28px;border-radius:0 0 18px 18px;box-shadow:0 3px 10px #20395518}
+header h1{font-size:30px;letter-spacing:.3px;font-weight:800}
+header>div{font-size:14px;margin-top:6px;color:#e2eaf4}
+main{padding:20px 24px;max-width:1500px;margin-left:var(--nav-width,190px);box-sizing:border-box}
+.panel{border:1px solid var(--line);border-radius:15px;background:#fff;box-shadow:0 2px 8px #2039550a;margin:18px 0 24px}
+.panel h2{background:var(--navy);padding:15px 22px;font-size:20px;font-weight:750;letter-spacing:.1px}
+.inside{padding:22px 24px}
+#entry .inside hr{border:0;border-top:1px solid #d5dce4;margin:20px 0}
+.field label{color:#344256;font-weight:700;font-size:14px;margin-bottom:8px}
+.field input,.field select,.field textarea{background:var(--cream);border:1px solid var(--gold);border-radius:8px;padding:11px 13px;color:#344256;min-height:42px;box-shadow:inset 0 1px 1px #fff8}
+.field input::placeholder,.field textarea::placeholder{color:#8b9098}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid #376aa830;border-color:var(--blue)}
+#rfq.grid{grid-template-columns:repeat(2,minmax(260px,1fr));gap:15px 24px}
+#supplier.grid{grid-template-columns:repeat(2,minmax(230px,1fr));gap:15px 24px}
+#item.grid{grid-template-columns:repeat(2,minmax(230px,1fr));gap:15px 24px}
+.actions{gap:10px;margin-top:18px}
+button{border-radius:8px;padding:11px 16px;font-weight:750;letter-spacing:.15px;box-shadow:0 1px 2px #10253d10}
+button:hover{filter:brightness(1.04);transform:translateY(-1px)}
+nav{background:#e8edf3;border-right:1px solid #d4deea;padding:58px 10px 14px}
+nav button{border-radius:9px;background:var(--navy);padding:12px 13px;min-height:46px}
+nav button.active{background:#376aa8}
+nav button .nav-icon{font-size:19px}
+#navToggle{background:#376aa8;box-shadow:0 2px 7px #0002}
+.card{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 2px 6px #20395508}
+table{font-size:13px}
+th{background:var(--navy);padding:11px 10px;font-weight:750}
+td,th{border-color:#d7e0e8}
+.note{color:#6b7788;font-size:12px}
+@media(max-width:900px){#rfq.grid,#supplier.grid,#item.grid{grid-template-columns:1fr}main{padding:12px}}
+</style>
+
+<style id="data-entry-polish">
+#entry .inside{padding:24px 26px}
+#entry .entry-section{background:#f8fafc;border:1px solid #e1e8ef;border-radius:13px;padding:17px 18px 20px;margin-bottom:18px}
+#entry .section-label{display:flex;align-items:center;gap:10px;color:#203955;font-size:13px;font-weight:800;letter-spacing:.8px;margin-bottom:16px}
+#entry .section-label span{display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:8px;background:#203955;color:white;font-size:12px;letter-spacing:0}
+#entry .grid{gap:16px 20px}
+#entry .field label{font-size:13px;color:#334b65;margin-bottom:7px}
+#entry .field input,#entry .field select{background:#fff;border:1px solid #cbd7e4;border-radius:9px;min-height:44px;padding:11px 13px}
+#entry .field input:focus,#entry .field select:focus{border-color:#3978b9;outline:3px solid #3978b91c}
+#entry #price{background:#fff9e9!important;border-color:#e1b64e!important;font-weight:700;font-size:16px}
+#entry .entry-actions{background:#edf3f8;border:1px solid #d9e4ef;border-radius:13px;padding:15px 18px}
+#entry .entry-actions .actions{margin:0;gap:10px}
+#entry .entry-actions button{min-height:43px;border-radius:9px;padding:11px 17px}
+#entry .entry-actions .blue{background:#376aa8}
+#entry .entry-actions .green{background:#21845c}
+#entry .entry-actions .orange{background:#c27a25}
+#entry .entry-actions .red{background:#b74646}
+#entry .entry-actions .note{margin:12px 0 0;color:#61738a;font-size:12px}
+@media(max-width:900px){#entry .inside{padding:12px}#entry .entry-section{padding:13px;margin-bottom:12px}#entry .entry-actions{padding:12px}}
+</style>
+
+<style id="entry-buttons-final">
+#entry .entry-actions{background:#f8fafc;border:1px solid #dce5ee;border-radius:14px;padding:18px 20px}
+#entry .entry-actions .actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#entry .entry-actions .actions button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:12px 20px;border:1px solid transparent;border-radius:10px;font-size:13px;font-weight:800;letter-spacing:.25px;box-shadow:0 2px 4px #1b355015;transition:background .15s,box-shadow .15s,transform .15s}
+#entry .entry-actions .actions button:hover{transform:translateY(-1px);box-shadow:0 4px 9px #1b355022;filter:none}
+#entry .entry-actions .actions button:active{transform:translateY(0);box-shadow:0 1px 2px #1b355015}
+#entry .entry-actions .blue{background:#e7eff9;color:#285a91;border-color:#c6d8ee}
+#entry .entry-actions .green{background:#e6f4ed;color:#21734f;border-color:#bfe2cf}
+#entry .entry-actions .orange{background:#fff2df;color:#9a5d16;border-color:#f0d4a8}
+#entry .entry-actions .red{background:#fbe9e9;color:#a53a3a;border-color:#ecc5c5}
+#entry .entry-actions .note{padding-top:12px;border-top:1px solid #e1e8ef;line-height:1.6}
+@media(max-width:650px){#entry .entry-actions .actions{display:grid;grid-template-columns:1fr 1fr}#entry .entry-actions .actions button{width:100%;padding:11px 8px}}
+</style>
+
+<style id="entry-buttons-layout">
+#entry .entry-actions{padding:20px 22px;background:linear-gradient(135deg,#f8fafc,#eef3f8);border:1px solid #d9e3ed;border-radius:16px}
+#entry .entry-actions .actions{display:grid;grid-template-columns:minmax(150px,1fr) minmax(220px,1.55fr) minmax(220px,1.55fr) minmax(120px,.85fr);gap:14px;align-items:stretch}
+#entry .entry-actions .actions button{width:100%;min-height:54px;padding:13px 16px;border-radius:11px;font-size:13px;font-weight:800;letter-spacing:.2px;white-space:normal;line-height:1.35;box-shadow:0 2px 5px #20395510}
+#entry .entry-actions .actions button:first-child{background:#e9f0f9;color:#285a91;border:1px solid #c9d9eb}
+#entry .entry-actions .actions button:nth-child(2){background:#227a55;color:#fff;border:1px solid #227a55}
+#entry .entry-actions .actions button:nth-child(3){background:#bd7624;color:#fff;border:1px solid #bd7624}
+#entry .entry-actions .actions button:nth-child(4){background:#fff;color:#a43b3b;border:1px solid #e4bcbc}
+#entry .entry-actions .actions button:hover{transform:translateY(-2px);box-shadow:0 5px 12px #20395518;filter:brightness(1.02)}
+#entry .entry-actions .actions button:active{transform:translateY(0)}
+#entry .entry-actions .note{margin:15px 0 0;padding-top:12px;border-top:1px solid #dce5ee;color:#66778b;line-height:1.6}
+@media(max-width:950px){#entry .entry-actions .actions{grid-template-columns:1fr 1fr}#entry .entry-actions .actions button{min-height:48px}}
+@media(max-width:520px){#entry .entry-actions .actions{grid-template-columns:1fr}}
+</style>
+
+<style id="project-wide-design-system">
+:root{--ui-navy:#203955;--ui-blue:#376aa8;--ui-bg:#f4f6f8;--ui-panel:#fff;--ui-border:#d9e3ed;--ui-text:#344256;--ui-muted:#66778b;--ui-green:#227a55;--ui-orange:#bd7624;--ui-red:#a43b3b}
+body{background:var(--ui-bg);color:var(--ui-text);font-family:"Segoe UI",Arial,sans-serif}
+header{background:var(--ui-navy)!important;border-radius:0 0 16px 16px;box-shadow:0 3px 10px #20395512}
+header h1{letter-spacing:.2px}
+main{padding:20px 24px;max-width:1600px;box-sizing:border-box}
+.panel{background:var(--ui-panel);border:1px solid var(--ui-border);border-radius:15px;overflow:hidden;margin:18px 0 24px;box-shadow:0 2px 8px #20395509}
+.panel h2{background:var(--ui-navy)!important;color:white;padding:15px 21px;font-size:19px;font-weight:750}
+.inside{padding:20px 22px}
+.grid{gap:15px 20px}
+.field label{display:block;color:#344b65;font-weight:750;font-size:13px;margin:0 0 7px}
+.field input,.field select,.field textarea{background:#fff;border:1px solid #cbd7e4;border-radius:9px;padding:10px 13px;min-height:42px;color:var(--ui-text);box-sizing:border-box;transition:border-color .15s,box-shadow .15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:0;border-color:var(--ui-blue);box-shadow:0 0 0 3px #376aa81c}
+button{border-radius:9px;padding:10px 15px;font-weight:750;letter-spacing:.15px;transition:transform .15s,box-shadow .15s,filter .15s}
+button:hover{transform:translateY(-1px);box-shadow:0 3px 8px #20395518;filter:brightness(1.03)}
+button:active{transform:translateY(0)}
+nav{background:#e8edf3!important;border-right:1px solid var(--ui-border)}
+nav button{min-height:45px;border-radius:9px;background:var(--ui-navy);box-shadow:none}
+nav button.active{background:var(--ui-blue)}
+#navToggle{background:var(--ui-blue)}
+.card{background:white;border:1px solid var(--ui-border);border-radius:12px;padding:14px;box-shadow:0 2px 7px #20395508}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+th{background:var(--ui-navy)!important;color:white;padding:11px 12px;font-weight:750}
+td{padding:10px 12px;background:#fff;color:var(--ui-text)}
+td,th{border-color:var(--ui-border)}
+tbody tr:nth-child(even) td{background:#f8fafc}
+tbody tr:hover td{background:#f0f5fa}
+.note{color:var(--ui-muted);font-size:12px;line-height:1.6}
+.section-label{color:var(--ui-navy)}
+@media(max-width:900px){main{padding:12px}.inside{padding:14px}.panel h2{padding:13px 16px}}
+</style>
+<style id="supplier-window-polish">
+#suppliers .inside{padding:24px 26px}
+#suppliers #supplierCards{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;align-items:start}
+#suppliers #supplierCards>.card{padding:20px;background:#fff;border:1px solid #dce5ee;border-radius:14px;box-shadow:0 2px 7px #2039550a;min-width:0}
+#suppliers #supplierCards>.card>h3{margin:0 0 14px;padding-bottom:12px;border-bottom:1px solid #e2e9f1;color:#203955;font-size:18px;font-weight:800}
+#suppliers #supplierCards>.card>button.green{background:#e6f4ed;color:#21734f;border:1px solid #bfe2cf;border-radius:9px;padding:11px 16px}
+#suppliers #supplierCards>.card>button.red{background:#fbe9e9;color:#a53a3a;border:1px solid #ecc5c5}
+#suppliers #supplierCards .field{margin:10px 0}
+#suppliers #supplierCards .field label{font-size:13px;color:#334b65;margin-bottom:7px}
+#suppliers #supplierCards .field input,#suppliers #supplierCards .field select{background:#fff;border:1px solid #cbd7e4;border-radius:9px;min-height:43px;padding:10px 12px}
+#suppliers #supplierCards .field input:focus,#suppliers #supplierCards .field select:focus{outline:3px solid #3978b91c;border-color:#3978b9}
+#suppliers #supplierCards button.green{background:#e6f4ed;color:#21734f;border:1px solid #bfe2cf}
+#suppliers #supplierCards button.red{background:#fbe9e9;color:#a53a3a;border:1px solid #ecc5c5}
+#suppliers #supplierCards button{box-shadow:none;font-size:12px}
+#suppliers #supplierCards button:hover{transform:translateY(-1px)}
+#suppliers #supplierCards [style*="background:#f1f5f9"]{background:#f8fafc!important;border:1px solid #dce5ee!important;border-radius:13px!important;padding:17px!important;margin-top:16px!important}
+#suppliers #supplierCards h4{font-size:14px;font-weight:800;color:#203955!important;margin-bottom:14px!important;padding-bottom:10px;border-bottom:1px solid #e1e8ef}
+#suppliers #supplierCards input[type=file]{background:#fff!important;border:1px dashed #b8c9dc!important;padding:9px!important}
+#suppliers #supplierCards a{color:#376aa8;font-weight:700}
+@media(max-width:700px){#suppliers .inside{padding:12px}#suppliers #supplierCards{grid-template-columns:1fr;gap:12px}}
+</style>
+<style id="all-pages-consistent-polish">
+/* Shared layout and visual language across every application page */
+section[id] .inside{padding:24px 26px}
+section[id] .grid,section[id] .cards{gap:16px 20px}
+section[id] .card{padding:18px;background:#fff;border:1px solid #dce5ee;border-radius:13px;box-shadow:0 2px 7px #2039550a;min-width:0}
+section[id] .field{margin:0 0 12px}
+section[id] .field label{display:block;color:#344b65;font-size:13px;font-weight:750;margin-bottom:7px}
+section[id] .field input,section[id] .field select,section[id] .field textarea{background:#fff;border:1px solid #cbd7e4;border-radius:9px;min-height:43px;padding:10px 12px;color:#344256;box-shadow:none}
+section[id] .field input:focus,section[id] .field select:focus,section[id] .field textarea:focus{outline:3px solid #3978b91c;border-color:#3978b9}
+section[id] .actions{gap:10px;margin-top:16px}
+section[id] button{border-radius:9px;box-shadow:none;padding:11px 15px}
+section[id] button:hover{filter:brightness(1.04);transform:translateY(-1px)}
+section[id] .scroll{border:1px solid #dce5ee;border-radius:11px;background:white}
+section[id] table{font-size:13px}
+section[id] th{padding:12px 10px;background:#203955;color:#fff;font-weight:750}
+section[id] td,section[id] th{border-color:#d7e0e8;padding:10px}
+section[id] .note{color:#6b7788;font-size:12px}
+#comparison .inside,#itemsMaster .inside,#items .inside,#summary .inside,#backupSheet .inside{padding:24px 26px}
+#comparison .card,#itemsMaster .card,#items .card,#summary .card,#backupSheet .card{background:#f8fafc}
+@media(max-width:900px){section[id] .inside{padding:14px}section[id] .grid,section[id] .cards{grid-template-columns:1fr!important;gap:12px}}
+</style><style id="comparison-and-items-master-finish">
+#comparison .inside{padding:24px 26px}
+#comparison #kpis{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}
+#comparison #kpis>div{padding:10px 14px;background:#f8fafc;border:1px solid #dce5ee;border-radius:9px;color:#344b65}
+#comparison .scroll{overflow-x:auto;border:1px solid #dce5ee;border-radius:11px;padding:0;background:#fff}
+#comparison .scroll>.actions{padding:12px 14px;margin:0;border-bottom:1px solid #e1e8ef;background:#f8fafc}
+#comparison #comp{min-width:780px;width:100%;border-collapse:separate;border-spacing:0}
+#comparison #comp th{background:#203955;color:#fff;padding:13px 12px;font-size:13px}
+#comparison #comp td{padding:12px;border:1px solid #e0e7ef;background:#fff}
+#comparison .inside>.actions{padding-top:16px}
+#comparison .inside>.actions button{min-height:42px}
+#itemsMaster .inside{padding:24px 26px}
+#itemsMaster .grid{background:#f8fafc;border:1px solid #e1e8ef;border-radius:13px;padding:18px 20px;gap:16px 20px;margin-bottom:16px}
+#itemsMaster .field input,#itemsMaster .field select,#itemsMaster .field textarea{background:#fff;border:1px solid #cbd7e4;border-radius:9px;min-height:43px;padding:11px 13px;box-shadow:none}
+#itemsMaster .field input:focus,#itemsMaster .field select:focus,#itemsMaster .field textarea:focus{outline:3px solid #3978b91c;border-color:#3978b9}
+#itemsMaster .actions{margin-top:0;margin-bottom:16px}
+#itemsMaster .scroll{border:1px solid #dce5ee;border-radius:11px;overflow:auto}
+#itemsMaster #masterItemsTable{width:100%;border-collapse:separate;border-spacing:0;min-width:700px}
+#itemsMaster #masterItemsTable th{background:#203955;color:white;padding:13px 12px}
+#itemsMaster #masterItemsTable td{padding:12px;border:1px solid #e0e7ef;background:#fff}
+@media(max-width:900px){#comparison .inside,#itemsMaster .inside{padding:14px}#itemsMaster .grid{padding:14px}}
+</style><style id="shared-action-button-colors">
+/* Match action-button palette and finish used in Data Entry */
+#comparison .inside button.green,#itemsMaster .inside button.green{background:#21845c!important;color:#fff!important;border:1px solid #1b704d!important}
+#comparison .inside button.red,#itemsMaster .inside button.red{background:#b74646!important;color:#fff!important;border:1px solid #a23d3d!important}
+#comparison .inside button.blue,#itemsMaster .inside button.blue{background:#376aa8!important;color:#fff!important;border:1px solid #2e5d95!important}
+#comparison .inside button.orange,#itemsMaster .inside button.orange{background:#c27a25!important;color:#fff!important;border:1px solid #a9671f!important}
+#comparison .inside button.purple,#itemsMaster .inside button.purple{background:#5a4794!important;color:#fff!important;border:1px solid #4c3b80!important}
+#comparison .inside .actions button,#itemsMaster .inside .actions button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:43px;padding:11px 17px;border-radius:9px;font-size:13px;font-weight:800;letter-spacing:.2px;box-shadow:0 2px 4px #1b355015;transition:background .15s,box-shadow .15s,transform .15s}
+#comparison .inside .actions button:hover,#itemsMaster .inside .actions button:hover{transform:translateY(-1px);box-shadow:0 4px 9px #1b355022}
+</style><style id="supplier-buttons-reference-match">
+#suppliers #supplierCards button.green,
+#suppliers #supplierCards button.green:visited{
+ background:#e6f4ed!important;color:#21734f!important;border:1px solid #bfe2cf!important;
+ border-radius:9px!important;padding:8px 13px!important;min-height:31px!important;
+ font-size:11px!important;font-weight:800!important;letter-spacing:0!important;
+ box-shadow:none!important;transform:none!important;filter:none!important
+}
+#suppliers #supplierCards button.red{
+ background:#fbe9e9!important;color:#a53a3a!important;border:1px solid #ecc5c5!important;
+ border-radius:9px!important;padding:8px 13px!important;min-height:31px!important;
+ font-size:11px!important;font-weight:800!important;letter-spacing:0!important;
+ box-shadow:none!important;transform:none!important;filter:none!important
+}
+#suppliers #supplierCards button.green:hover,#suppliers #supplierCards button.red:hover{
+ filter:brightness(.98)!important;transform:translateY(-1px)!important;box-shadow:none!important
+}
+</style><style id="comparison-items-soft-button-match">
+/* Price Comparison + Items Master buttons use the same soft button treatment as Supplier Window */
+#comparison .inside button.green,#itemsMaster .inside button.green{
+ background:#e6f4ed!important;color:#21734f!important;border:1px solid #bfe2cf!important;
+ border-radius:9px!important;box-shadow:none!important
+}
+#comparison .inside button.red,#itemsMaster .inside button.red{
+ background:#fbe9e9!important;color:#a53a3a!important;border:1px solid #ecc5c5!important;
+ border-radius:9px!important;box-shadow:none!important
+}
+#comparison .inside button.blue,#itemsMaster .inside button.blue{
+ background:#eaf2fb!important;color:#376aa8!important;border:1px solid #c8dced!important;
+ border-radius:9px!important;box-shadow:none!important
+}
+#comparison .inside button.purple,#itemsMaster .inside button.purple{
+ background:#f0ecfa!important;color:#5a4794!important;border:1px solid #d8cdef!important;
+ border-radius:9px!important;box-shadow:none!important
+}
+#comparison .inside button.orange,#itemsMaster .inside button.orange{
+ background:#fff2e3!important;color:#a9671f!important;border:1px solid #f0d3ad!important;
+ border-radius:9px!important;box-shadow:none!important
+}
+#comparison .inside .actions button,#itemsMaster .inside .actions button{
+ min-height:31px!important;padding:8px 13px!important;font-size:11px!important;
+ font-weight:800!important;letter-spacing:0!important;box-shadow:none!important
+}
+#comparison .inside button:hover,#itemsMaster .inside button:hover{
+ filter:brightness(.98)!important;transform:translateY(-1px)!important;box-shadow:none!important
+}
+</style><style id="backup-soft-button-match">
+#backupSheet .inside button.blue{
+ background:#eaf2fb!important;color:#376aa8!important;border:1px solid #c8dced!important;
+ border-radius:9px!important;box-shadow:none!important
+}
+#backupSheet .inside button.red{
+ background:#fbe9e9!important;color:#a53a3a!important;border:1px solid #ecc5c5!important;
+ border-radius:9px!important;box-shadow:none!important
+}
+#backupSheet .inside .actions button{
+ min-height:31px!important;padding:8px 13px!important;font-size:11px!important;
+ font-weight:800!important;letter-spacing:0!important;box-shadow:none!important
+}
+#backupSheet .inside button:hover{filter:brightness(.98)!important;transform:translateY(-1px)!important;box-shadow:none!important}
+</style><style id="header-menu-toggle-polish">
+#navToggle{
+ position:fixed!important;left:10px!important;top:22px!important;z-index:30!important;
+ width:32px!important;height:32px!important;min-height:32px!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ padding:0!important;border-radius:8px!important;
+ background:#eaf2fb!important;color:#376aa8!important;
+ border:1px solid #c8dced!important;
+ box-shadow:none!important;font-size:18px!important;font-weight:800!important
+}
+#navToggle:hover{background:#dceafa!important;transform:translateY(-1px)!important;filter:none!important;box-shadow:none!important}
+header h1,header>div{padding-left:42px!important}
+body.nav-hidden #navToggle{left:10px!important}
+@media(max-width:700px){#navToggle{top:12px!important;left:8px!important}header h1,header>div{padding-left:40px!important}}
+</style><style id="comparison-company-header-refinement">
+#comparison #comp th.company-price-head{min-width:105px;width:105px;padding:10px 8px 12px;vertical-align:middle;text-align:center;white-space:normal}
+#comparison #comp th.company-price-head .company-head-name{font-size:13px;line-height:1.25;font-weight:800;overflow-wrap:anywhere;margin-bottom:4px}
+#comparison #comp th.company-price-head .company-head-unit{font-size:12px;line-height:1.2;font-weight:700;margin-bottom:8px}
+#comparison #comp th.company-price-head button.company-remove-btn{display:inline-flex!important;align-items:center;justify-content:center;width:25px!important;height:25px!important;min-height:25px!important;padding:0!important;border-radius:7px!important;background:#fbe9e9!important;color:#a53a3a!important;border:1px solid #ecc5c5!important;font-size:12px!important;font-weight:800!important;box-shadow:none!important;line-height:1!important}
+#comparison #comp th.company-price-head button.company-remove-btn:hover{background:#f7dddd!important;transform:translateY(-1px)!important}
+</style><style id="comparison-company-header-alignment">
+#comparison #comp th.company-price-head{
+ width:112px!important;min-width:112px!important;max-width:150px;
+ padding:12px 8px!important;vertical-align:top!important;text-align:center!important;
+ white-space:normal!important;height:78px;box-sizing:border-box
+}
+#comparison #comp th.company-price-head .company-head-name{
+ display:flex;align-items:center;justify-content:center;min-height:34px;
+ font-size:13px;line-height:1.25;font-weight:800;overflow-wrap:anywhere;
+ word-break:normal;margin:0 0 9px
+}
+#comparison #comp th.company-price-head button.company-remove-btn{
+ display:inline-flex!important;align-items:center;justify-content:center;
+ width:24px!important;height:24px!important;min-height:24px!important;
+ padding:0!important;margin:0 auto!important;border-radius:7px!important;
+ background:#fbe9e9!important;color:#a53a3a!important;border:1px solid #ecc5c5!important;
+ font-size:12px!important;font-weight:800!important;line-height:1!important;
+ box-shadow:none!important
+}
+#comparison #comp th.company-price-head button.company-remove-btn:hover{
+ background:#f7dddd!important;transform:translateY(-1px)!important;filter:none!important
+}
+</style><style id="comparison-remove-on-hover">
+#comparison #comp th.company-price-head button.company-remove-btn{
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ transition:opacity .16s ease,visibility .16s ease!important
+}
+#comparison #comp th.company-price-head:hover button.company-remove-btn,
+#comparison #comp th.company-price-head:focus-within button.company-remove-btn{
+ opacity:1!important;visibility:visible!important;pointer-events:auto!important
+}
+#comparison #comp th.company-price-head{position:relative}
+#comparison #comp th.company-price-head:hover{background:#294969!important}
+</style><style id="comparison-company-name-table-alignment">
+/* Harmonize supplier-name headers with the comparison table's standard header row */
+#comparison #comp{table-layout:auto}
+#comparison #comp thead th,
+#comparison #comp>tr:first-child th{vertical-align:middle}
+#comparison #comp th.company-price-head{
+ height:62px!important;min-height:62px!important;
+ padding:9px 8px!important;vertical-align:middle!important;
+ text-align:center!important;box-sizing:border-box!important;
+}
+#comparison #comp th.company-price-head .company-head-name{
+ min-height:0!important;height:auto!important;margin:0!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ line-height:1.2!important;font-size:12px!important;font-weight:800!important;
+ overflow-wrap:anywhere!important;word-break:normal!important;
+ padding:0 2px!important
+}
+#comparison #comp th.company-price-head button.company-remove-btn{
+ position:absolute!important;top:4px!important;right:4px!important;
+ width:20px!important;height:20px!important;min-height:20px!important;
+ border-radius:6px!important;font-size:10px!important
+}
+#comparison #comp th.company-price-head:hover .company-head-name{padding-right:13px!important}
+</style><style id="new-company-input-consistent">
+#suppliers #newCompanyName{
+ background:#fff!important;border:1px solid #cbd7e4!important;
+ border-radius:9px!important;min-height:43px!important;
+ height:43px!important;padding:10px 12px!important;
+ color:#344256!important;font-size:13px!important;
+ box-shadow:none!important;outline:none!important;
+}
+#suppliers #newCompanyName::placeholder{color:#8492a5!important;opacity:1}
+#suppliers #newCompanyName:focus{
+ border-color:#3978b9!important;outline:3px solid #3978b91c!important
+}
+#suppliers #supplierCards>div:first-child{
+ align-items:center!important;gap:10px!important;margin-bottom:16px!important
+}
+#suppliers #supplierCards>div:first-child button{
+ min-height:43px!important;padding:10px 15px!important;border-radius:9px!important
+}
+</style><style id="new-company-row-space-match">
+#suppliers #supplierCards>div:first-child{
+ width:100%!important;box-sizing:border-box!important;
+ display:grid!important;grid-template-columns:minmax(260px,340px) auto!important;
+ align-items:center!important;justify-content:start!important;gap:10px!important;
+}
+#suppliers #newCompanyName{
+ width:100%!important;max-width:340px!important;min-width:0!important;
+ box-sizing:border-box!important
+}
+#suppliers #supplierCards>div:first-child button{
+ width:max-content!important;min-width:130px!important
+}
+@media(max-width:700px){
+ #suppliers #supplierCards>div:first-child{grid-template-columns:1fr!important}
+ #suppliers #newCompanyName{max-width:none!important}
+}
+</style><style id="settings-nav-bottom">
+#nav{display:flex!important;flex-direction:column!important}
+#nav button:last-child{margin-top:auto!important}
+#nav button:last-child{margin-top:0!important}</style><style id="proper-dark-theme">
+body.dark-theme{background:#111923!important;color:#dce5ef!important}
+body.dark-theme main{background:#111923!important}
+body.dark-theme .panel,body.dark-theme .card,body.dark-theme .inside,
+body.dark-theme .scroll,body.dark-theme .entry-section{background:#1b2735!important;color:#dce5ef!important;border-color:#344455!important}
+body.dark-theme .panel h2,body.dark-theme header{background:#172638!important;color:#f1f5f9!important}
+body.dark-theme .field label,body.dark-theme .section-label,body.dark-theme .note,
+body.dark-theme h3,body.dark-theme h4{color:#dce5ef!important}
+body.dark-theme .field input,body.dark-theme .field select,body.dark-theme .field textarea,
+body.dark-theme input,body.dark-theme select,body.dark-theme textarea{
+ background:#253445!important;color:#e7eef7!important;border-color:#45586b!important
+}
+body.dark-theme input::placeholder,body.dark-theme textarea::placeholder{color:#9eafc1!important}
+body.dark-theme table{background:#1b2735!important;color:#dce5ef!important}
+body.dark-theme td{background:#1b2735!important;color:#dce5ef!important;border-color:#344455!important}
+body.dark-theme th{background:#172638!important;color:#f1f5f9!important;border-color:#344455!important}
+body.dark-theme nav{background:#192635!important}
+body.dark-theme nav button{background:#253445!important;color:#dce5ef!important}
+body.dark-theme nav button.active{background:#376aa8!important;color:white!important}
+body.dark-theme #suppliers #supplierCards [style*="background:#f1f5f9"]{background:#202e3d!important}
+body.dark-theme #suppliers #supplierCards [style*="background:white"]{background:#253445!important}
+body.dark-theme .lowest{background:#254a37!important;color:#d8f6d5!important}
+</style>
+<style id="dark-theme-contrast-fix">
+/* Dark mode: remove remaining light surfaces in the data-entry page */
+body.dark-theme #entry .entry-section,
+body.dark-theme #entry .entry-actions,
+body.dark-theme #entry .entry-actions .actions,
+body.dark-theme #entry .inside,
+body.dark-theme #settings .inside,
+body.dark-theme #settings .card,
+body.dark-theme #settings .panel,
+body.dark-theme section#settings,
+body.dark-theme #settings{
+  background:#1b2735!important;color:#dce5ef!important;border-color:#344455!important;
+}
+body.dark-theme #entry .entry-section{background:#202e3d!important}
+body.dark-theme #entry .section-label,
+body.dark-theme #entry .field label,
+body.dark-theme #entry .entry-actions .note,
+body.dark-theme #settings p,
+body.dark-theme #settings small,
+body.dark-theme #settings .note,
+body.dark-theme #settings label{
+  color:#cbd8e6!important;
+}
+body.dark-theme #entry .entry-actions button{color:#fff!important}
+body.dark-theme #entry .entry-actions .blue{background:#376aa8!important}
+body.dark-theme #entry .entry-actions .green{background:#21845c!important}
+body.dark-theme #entry .entry-actions .orange{background:#b87520!important}
+body.dark-theme #entry .entry-actions .red{background:#b74646!important}
+body.dark-theme #entry .entry-actions hr{border-color:#344455!important}
+body.dark-theme #settings button{color:#fff!important}
+body.dark-theme #settings input,
+body.dark-theme #settings select,
+body.dark-theme #settings textarea{background:#253445!important;color:#e7eef7!important;border-color:#45586b!important}
+body.dark-theme #settings option{background:#253445!important;color:#e7eef7!important}
+body.dark-theme #entry .field input,
+body.dark-theme #entry .field select,
+body.dark-theme #entry .field textarea{background:#253445!important;color:#e7eef7!important;border-color:#45586b!important}
+body.dark-theme #entry .field input::placeholder,
+body.dark-theme #entry .field textarea::placeholder{color:#aab9c9!important}
+body.dark-theme #entry .section-label span{background:#376aa8!important;color:#fff!important}
+body.dark-theme .panel .inside{background:transparent!important}
+</style>
+
+<style id="settings-button-theme-match">
+/* Match Settings action buttons to the soft action-button palette used in Items Master */
+#settings .actions button.green{
+  background:#e6f4ed!important;color:#21734f!important;
+  border:1px solid #bfe2cf!important;box-shadow:none!important;
+}
+#settings .actions button.red{
+  background:#fbe9e9!important;color:#a53a3a!important;
+  border:1px solid #ecc5c5!important;box-shadow:none!important;
+}
+body.dark-theme #settings .actions button.green{
+  background:#e6f4ed!important;color:#21734f!important;border-color:#bfe2cf!important;
+}
+body.dark-theme #settings .actions button.red{
+  background:#fbe9e9!important;color:#a53a3a!important;border-color:#ecc5c5!important;
+}
+</style>
+<style id="comparison-dark-strip-fix">
+body.dark-theme #comparison .scroll,
+body.dark-theme #comparison .scroll .actions,
+body.dark-theme #comparison .scroll > div,
+body.dark-theme #comparison #comp,
+body.dark-theme #comparison #comp thead,
+body.dark-theme #comparison #comp tbody{
+  background:#1b2735!important;
+  color:#dce5ef!important;
+  border-color:#344455!important;
+}
+body.dark-theme #comparison .scroll .actions{
+  padding:12px!important;
+  margin:0!important;
+}
+body.dark-theme #comparison .scroll .actions button.red{
+  background:#fbe9e9!important;color:#a53a3a!important;border-color:#ecc5c5!important;
+}
+</style>
+
+<style id="entry-form-dark-surface-fix">
+/* Dark mode: the pale item form panel should match the surrounding dark UI */
+body.dark-theme #entry .entry-section,
+body.dark-theme #entry .entry-form,
+body.dark-theme #entry .form-card,
+body.dark-theme #entry .item-entry-card,
+body.dark-theme #entry .grid,
+body.dark-theme #entry .fields-container,
+body.dark-theme #entry .field-group{
+  background:#1b2735!important;
+  color:#dce5ef!important;
+  border-color:#344455!important;
+}
+body.dark-theme #entry .entry-section > *,
+body.dark-theme #entry .entry-form > *,
+body.dark-theme #entry .form-card > *{
+  color:#dce5ef!important;
+}
+body.dark-theme #entry .field label,
+body.dark-theme #entry label{
+  color:#cbd8e6!important;
+}
+body.dark-theme #entry input,
+body.dark-theme #entry select,
+body.dark-theme #entry textarea{
+  background:#253445!important;
+  color:#e7eef7!important;
+  border-color:#45586b!important;
+}
+body.dark-theme #entry input::placeholder,
+body.dark-theme #entry textarea::placeholder{color:#aab9c9!important}
+</style>
+
+<style id="items-master-compact-area">
+/* Return fields to their original order and use the compact company-entry surface */
+#itemsMaster .inside{padding:18px 26px!important}
+#itemsMaster #masterItemFields{
+ background:transparent!important;border:0!important;border-radius:0!important;
+ padding:0!important;margin:0 0 14px!important;gap:12px 16px!important;
+}
+#itemsMaster #masterItemFields .field input,
+#itemsMaster #masterItemFields .field textarea{
+ background:#f8fafc!important;color:#263548!important;
+ border:1px solid #cbd7e4!important;border-radius:8px!important;
+ box-shadow:none!important;min-height:35px!important;padding:9px 11px!important;
+}
+#itemsMaster #masterItemFields .field label{color:#d3deeb!important}
+#itemsMaster #masterItemFields .field textarea{min-height:48px!important}
+body:not(.dark-theme) #itemsMaster #masterItemFields .field label{color:#536579!important}
+</style>
+
+<style id="fix-pale-price-input-dark">
+/* Fix the pale/gold price input that retained the light-theme styling */
+body.dark-theme input[type="number"],
+body.dark-theme input[type="text"],
+body.dark-theme input[type="search"],
+body.dark-theme input:not([type]),
+body.dark-theme .price-input,
+body.dark-theme .price,
+body.dark-theme #entry input,
+body.dark-theme #entry .field input,
+body.dark-theme section .field input{
+  background:#253445!important;
+  color:#e7eef7!important;
+  border:1px solid #45586b!important;
+  box-shadow:none!important;
+}
+body.dark-theme input[type="number"]::placeholder,
+body.dark-theme input[type="text"]::placeholder,
+body.dark-theme input:not([type])::placeholder{
+  color:#aab9c9!important;opacity:1!important;
+}
+body.dark-theme input[type="number"]:focus,
+body.dark-theme input[type="text"]:focus,
+body.dark-theme input:not([type]):focus{
+  background:#253445!important;border-color:#6b91bb!important;
+  outline:2px solid #6b91bb33!important;
+}
+</style>
+
+<style id="force-dark-over-yellow-inline-field">
+body.dark-theme #suppliers #newCompanyName,
+body.dark-theme input#newCompanyName,
+body.dark-theme input[style*="#fff5cf"],
+body.dark-theme input[style*="#fff5CF"],
+body.dark-theme input[style*="d5a21b"]{
+ background:#253445!important;
+ color:#e7eef7!important;
+ border:1px solid #45586b!important;
+ box-shadow:none!important;
+}
+body.dark-theme #suppliers #newCompanyName::placeholder,
+body.dark-theme input#newCompanyName::placeholder{
+ color:#aab9c9!important;opacity:1!important;
+}
+</style>
+
+<style id="override-specific-entry-price-id">
+body.dark-theme #entry #price,
+html body.dark-theme #entry input#price{
+  background-color:#253445!important;
+  background-image:none!important;
+  color:#e7eef7!important;
+  border:1px solid #45586b!important;
+  box-shadow:none!important;
+  -webkit-appearance:none!important;
+  appearance:none!important;
+}
+body.dark-theme #entry #price::placeholder{
+  color:#aab9c9!important;opacity:1!important;
+}
+body.dark-theme #entry #price:focus{
+  background-color:#253445!important;
+  border-color:#6b91bb!important;
+  outline:2px solid #6b91bb33!important;
+}
+</style>
+<style>
+/* Phase 14 — Dashboard and Portal visual polish */
+body:has(.cards) .cards{gap:16px}
+body:has(.cards) .card{position:relative;overflow:hidden;padding:20px 21px!important;min-height:112px}
+body:has(.cards) .card:before{content:"";position:absolute;right:-34px;top:-42px;width:110px;height:110px;border-radius:50%;background:rgba(8,124,255,.09);pointer-events:none}
+.metric{font-size:clamp(28px,3vw,36px)!important;line-height:1.15;color:#f5f9ff!important;letter-spacing:-1px}
+.label{font-size:12px!important;letter-spacing:.5px;text-transform:uppercase;color:#9bb4d2!important;font-weight:650}
+.head{padding-bottom:6px}
+.head h1{background:linear-gradient(90deg,#f4f8ff,#8fc7ff);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.actions button{border:1px solid rgba(88,145,210,.22)!important}
+.grid{gap:16px!important}
+.panel{padding:20px!important}
+.panel h2{margin-top:0;color:#e7f2ff!important}
+.tile{background:linear-gradient(150deg,#10233c,#0a1729)!important;transition:transform .18s,border-color .18s,box-shadow .18s}
+.tile:hover{transform:translateY(-3px);border-color:#2f75c4!important;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.tile h3{font-size:17px!important;color:#f0f7ff}
+.tag{border:1px solid #2b4b70!important;background:#102b49!important;color:#9bcaff!important}
+table{width:100%}
+@media(max-width:780px){
+ .grid{grid-template-columns:1fr!important}
+ .head{align-items:flex-start!important}
+ .actions{width:100%}
+ .actions button{flex:1}
+}
+</style><style id="light-theme-complete-fix">
+/* Explicit premium light palette; overrides the global dark premium base when Light is selected */
+body:not(.dark-theme){background:#f3f6fb!important;color:#243449!important}
+body:not(.dark-theme) main{background:transparent!important;color:#243449!important}
+body:not(.dark-theme) header{background:#203955!important;color:#fff!important}
+body:not(.dark-theme) header>div,body:not(.dark-theme) header a{color:#e2eaf4!important}
+body:not(.dark-theme) .panel,body:not(.dark-theme) .card,body:not(.dark-theme) .inside,
+body:not(.dark-theme) .scroll,body:not(.dark-theme) .entry-section,body:not(.dark-theme) .tile,
+body:not(.dark-theme) #settings .inside,body:not(.dark-theme) #entry .inside{
+ background:#fff!important;color:#243449!important;border-color:#d7e0e8!important;
+ box-shadow:0 2px 10px rgba(32,57,85,.07)!important}
+body:not(.dark-theme) .panel h2,body:not(.dark-theme) .section-label,body:not(.dark-theme) h3,body:not(.dark-theme) h4{color:#203955!important}
+body:not(.dark-theme) .panel h2{background:#e5edf7!important;color:#203955!important}
+body:not(.dark-theme) .field label,body:not(.dark-theme) label,body:not(.dark-theme) p,
+body:not(.dark-theme) small,body:not(.dark-theme) .note,body:not(.dark-theme) .muted{color:#52657b!important}
+body:not(.dark-theme) input,body:not(.dark-theme) select,body:not(.dark-theme) textarea,
+body:not(.dark-theme) .field input,body:not(.dark-theme) .field select,body:not(.dark-theme) .field textarea{
+ background:#fff!important;color:#243449!important;border:1px solid #c8d5e4!important;box-shadow:none!important}
+body:not(.dark-theme) input::placeholder,body:not(.dark-theme) textarea::placeholder{color:#8795a7!important}
+body:not(.dark-theme) nav{background:#e8edf4!important;border-right:1px solid #d4deea!important}
+body:not(.dark-theme) nav button{background:#203955!important;color:#fff!important}
+body:not(.dark-theme) nav button.active{background:#0874e8!important;color:#fff!important}
+body:not(.dark-theme) table{background:#fff!important;color:#243449!important;border-color:#d7e0e8!important}
+body:not(.dark-theme) th{background:#203955!important;color:#fff!important;border-color:#d7e0e8!important}
+body:not(.dark-theme) td{background:#fff!important;color:#243449!important;border-color:#d7e0e8!important}
+body:not(.dark-theme) tr:hover td{background:#f1f6fc!important}
+body:not(.dark-theme) .lowest{background:#e2f6e3!important;color:#205b32!important}
+body:not(.dark-theme) #entry .entry-section{background:#f8fafc!important;border-color:#e1e8ef!important}
+body:not(.dark-theme) #entry .section-label span{background:#203955!important;color:#fff!important}
+body:not(.dark-theme) #settings button.secondary,body:not(.dark-theme) button.secondary{background:#e8eef6!important;color:#203955!important;border:1px solid #cbd8e7!important}
+</style>
+<style id="portal-settings-bottom">
+#nav .nav-portal-button{margin-top:auto!important;margin-bottom:6px!important;flex-shrink:0}
+#nav button:last-child{margin-top:0!important;flex-shrink:0}
+</style>
+<style id="purple-theme-third-option">
+body.purple-theme{background:#0b1020!important;color:#e9e7ff!important}
+body.purple-theme main{background:#0b1020!important;color:#e9e7ff!important}
+body.purple-theme header,body.purple-theme .panel h2{background:linear-gradient(110deg,#17132d,#241746)!important;color:#f8f5ff!important;border-color:#5e3ab4!important}
+body.purple-theme nav{background:#111027!important;border-right:1px solid #39275f!important}
+body.purple-theme nav button,body.purple-theme #navToggle{background:#21183c!important;color:#e8e2ff!important;border:1px solid #39275f!important}
+body.purple-theme nav button.active{background:linear-gradient(90deg,#6d3fe2,#8a4dff)!important;color:#fff!important}
+body.purple-theme .panel,body.purple-theme .card,body.purple-theme .inside,body.purple-theme .scroll,body.purple-theme .entry-section,body.purple-theme .tile,body.purple-theme #settings .inside,body.purple-theme #entry .inside{background:#17152b!important;color:#e9e7ff!important;border-color:#382957!important}
+body.purple-theme .panel h2{background:#21183c!important;color:#f6f1ff!important}
+body.purple-theme .field label,body.purple-theme label,body.purple-theme p,body.purple-theme small,body.purple-theme .note,body.purple-theme .muted,body.purple-theme h3,body.purple-theme h4,body.purple-theme .section-label{color:#c9c0ed!important}
+body.purple-theme input,body.purple-theme select,body.purple-theme textarea,body.purple-theme .field input,body.purple-theme .field select,body.purple-theme .field textarea{background:#211d39!important;color:#f3efff!important;border:1px solid #5a438b!important}
+body.purple-theme input::placeholder,body.purple-theme textarea::placeholder{color:#a69acb!important}
+body.purple-theme table{background:#17152b!important;color:#e9e7ff!important}
+body.purple-theme th{background:#2b2050!important;color:#fff!important;border-color:#49366d!important}
+body.purple-theme td{background:#17152b!important;color:#e9e7ff!important;border-color:#382957!important}
+body.purple-theme tr:hover td{background:#211b3a!important}
+body.purple-theme button{background:#493078!important;color:#fff!important;border:1px solid #6849a7!important}
+body.purple-theme button.active,body.purple-theme .active{background:#7847e8!important;color:#fff!important}
+body.purple-theme button.green{background:#21845c!important;border-color:#2eaa78!important}
+body.purple-theme button.orange{background:#a96920!important;border-color:#d28b35!important}
+body.purple-theme button.red{background:#a83e57!important;border-color:#d65a76!important}
+body.purple-theme button.blue{background:#435fc0!important;border-color:#6b83e6!important}
+body.purple-theme .lowest{background:#214331!important;color:#d9ffe5!important}
+body.purple-theme .resize-handle:hover{background:#9a75ff!important}
+body.purple-theme #entry .entry-section{background:#19162e!important;border-color:#3b2a5c!important}
+body.purple-theme #entry .section-label span{background:#6d3fe2!important;color:#fff!important}
+</style>
+</head><body>
+<header><h1>🛒 SUPPLIER QUOTATION SYSTEM</h1><div>RFQ • Data Entry • Comparison • Item Sheets • Manual Backup</div><div id="sqHealthStatus" style="position:absolute;left:20px;top:18px;font-size:12px;padding:6px 10px;border-radius:16px;background:#777;color:#fff" title="API health status">API: Checking…</div>
+<script id="sq-health-indicator">
+(async()=>{const el=document.getElementById("sqHealthStatus");if(!el)return;try{const r=await fetch("/api/health",{cache:"no-store"});const d=r.ok?await r.json():null;el.textContent=d?.status==="Healthy"?"API: Online":"API: Offline";el.style.background=d?.status==="Healthy"?"#16834a":"#b52d2d"}catch{el.textContent="API: Offline";el.style.background="#b52d2d"}})();
+</script></header>
+<nav id="nav"></nav><div id="navResize" title="Drag to resize navigation"></div><button id="navToggle" title="Hide/show navigation" onclick="toggleNav()">☰</button><main>
+<section id="entry" class="panel"><h2>📝 Supplier Quotation Data Entry</h2><div class="inside">
+<div class="entry-section"><div class="section-label"><span>01</span> RFQ DETAILS</div><div class="grid" id="rfq"></div></div>
+<div class="entry-section"><div class="section-label"><span>02</span> COMPANY & SUPPLIER</div><div class="grid" id="supplier"></div></div>
+<div class="entry-section"><div class="section-label"><span>03</span> ITEM & QUOTATION PRICE</div><div class="grid" id="item"></div></div>
+<div class="entry-actions"><div class="actions"><button class="blue" onclick="searchItem()">🔎 Search Item</button><button class="green" onclick="add(true)">＋ ADD WITH TAX</button><button class="orange" onclick="add(false)">＋ ADD WITHOUT TAX</button><button class="red" onclick="clearForm()">↺ CLEAR</button></div><p class="note">Without Tax price is converted using the VAT rate. With Tax price is saved as entered.</p></div>
+</div></section>
+<section id="comparison" class="panel hidden"><h2>📊 SUPPLIER PRICE COMPARISON</h2><div class="inside"><div id="kpis"></div><div class="scroll"><div class="actions"><button class="red" onclick="clearAllData()">🗑 CLEAR ALL DATA</button></div><table id="comp"></table></div><div class="actions"><button class="purple" onclick="backup()">▣ SAVE PRICE BACKUP (MANUAL)</button><button class="blue" onclick="csv()">Export CSV</button></div></div></section>
+<section id="suppliers" class="panel hidden"><h2>👥 SUPPLIERS — ALL IN ONE SHEET</h2><div class="inside"><div id="supplierCards" class="cards"></div></div></section>
+
+<section id="itemsMaster" class="panel hidden"><h2>📦 ITEMS — MASTER LIST</h2><div class="inside">
+<div class="grid" id="masterItemFields">
+<div class="field"><label>Item / Description</label><input id="masterItemName" placeholder="Enter item description"></div>
+<div class="field"><label>Quantity</label><input id="masterItemQty" type="number" min="1" value="1"></div>
+<div class="field"><label>UoM</label><input id="masterItemUom" placeholder="Unit"></div>
+<div class="field"><label>Item Components / Comment</label><textarea id="masterItemComment" placeholder="Components and specifications..."></textarea></div>
+</div>
+<div class="actions"><button class="green" id="masterSaveBtn" onclick="saveMasterItem()">＋ Add Item</button><button class="red" onclick="clearMasterItem()">CLEAR</button></div>
+<p class="note">Manage your items here. Changes are reflected in Data Entry, Price Comparison and Item Sheets.</p>
+<div class="scroll"><table id="masterItemsTable"></table></div>
+</div></section>
+<section id="items" class="panel hidden"><h2>📄 ITEM SHEETS — TOP 3 LOWEST</h2><div class="inside"><label>Item </label><select id="itemPick" onchange="itemSheet()"></select><div id="itemView"></div></div></section>
+<section id="summary" class="panel hidden"><h2>🏆 SUMMARY</h2><div class="inside scroll"><table id="summ"></table></div></section>
+<section id="backupSheet" class="panel hidden"><h2>🟢 BACKUP (MANUAL)</h2><div class="inside"><p>Backup is saved only when the Save Price Backup button is pressed. Saved in this browser.</p><div class="scroll"><table id="backs"></table></div><div class="actions"><button class="blue" onclick="downloadBackups()">Download Backup JSON</button><button class="red" onclick="clearBackups()">Clear Backup History</button></div></div></section><section id="quotationDecisionHistory" class="panel hidden"><h2>📜 QUOTATION DECISION HISTORY</h2><div class="inside"><p>Review the latest approval, rejection and award decisions recorded for a quotation.</p><div class="actions"><label for="decisionHistoryQuotationId">Quotation ID</label><input id="decisionHistoryQuotationId" type="number" min="1" placeholder="Enter quotation ID" style="max-width:220px"><button class="blue" onclick="loadQuotationDecisionHistory()">Load Decision History</button></div><p id="decisionHistoryStatus" role="status"></p><div class="scroll"><table id="decisionHistoryTable"></table></div></div></section><section id="rfqHistory" class="panel hidden"><h2>🗂 RFQ HISTORY</h2><div class="inside"><p>Save a snapshot of the current RFQ, its item list, supplier quotations and awards. Existing RFQ data remains unchanged.</p><div class="actions"><button class="green" onclick="saveRfqHistory()">Save Current RFQ to History</button><button class="secondary" onclick="exportRfqHistory()">Export History JSON</button></div><div class="scroll"><table id="rfqHistoryTable"></table></div></div></section>
+<section id="settings" class="panel hidden"><h2>⚙️ SETTINGS</h2><div class="inside">
+<div class="entry-section"><div class="section-label"><span>01</span> GENERAL SETTINGS</div>
+<div class="grid">
+<div class="field"><label>Interface Language</label><select id="settingLanguage" onchange="applyAppLanguage(this.value)"><option value="en">English</option><option value="ar">العربية</option></select></div>
+<div class="field"><label>Currency</label><select id="settingCurrency"><option value="EGP">EGP — Egyptian Pound</option><option value="USD">USD — US Dollar</option><option value="EUR">EUR — Euro</option><option value="SAR">SAR — Saudi Riyal</option><option value="AED">AED — UAE Dirham</option></select></div>
+<div class="field"><label>Company Name</label><input id="settingCompanyName" placeholder="Your company name"></div>
+<div class="field"><label>Theme</label><select id="settingTheme"><option value="navy">Light (Default)</option><option value="dark">Dark</option><option value="purple">Purple</option></select></div>
+</div></div>
+<div class="entry-section"><div class="section-label"><span>02</span> RFQ DEFAULTS</div><div class="grid">
+<div class="field"><label>Default VAT Rate (%)</label><input id="settingVat" type="number" min="0" max="100" value="14"></div>
+<div class="field"><label>Default RFQ Prefix</label><input id="settingRfqPrefix" value="RFQ"></div>
+</div></div>
+<div class="actions"><button class="green" onclick="saveSettings()">💾 Save Settings</button><button class="red" onclick="resetSettings()">↺ Reset Settings</button></div>
+<p class="note">Settings are saved in this browser. Language selection changes the navigation and main section titles; other app fields remain in their existing language for now.</p>
+</div></section></main>
+<script>
+let pendingDocFiles={};let editingMasterItemId=null;let companies=["Vallies Tech", "ACT", "Konnect Union", "Quality", "Direct Solutions", "Interact Technology", "Rovlex", "NexiTech", "Enterprise Technology", "E-Brand Integration", "intra consult", "It Planet", "Go Faster", "Top Value Solutions", "Ultimate Technologies", "Elite Serv", "Cloud IT", "Beta Technology"];let suppliers=companies.map((company,i)=>({id:"supplier_"+i,company,name:"",phone:"",email:"",documents:[]})),items=[],quotes=[],backups=JSON.parse(localStorage.getItem("rfqBackups")||"[]");
+suppliers.find(s=>s.company==="Cloud IT")&&Object.assign(suppliers.find(s=>s.company==="Cloud IT"),{name:"Toqa Naguib",phone:"01030863103",email:"sales4@cloudit.com.eg"});
+suppliers.find(s=>s.company==="Beta Technology")&&Object.assign(suppliers.find(s=>s.company==="Beta Technology"),{name:"Aya Gamal",phone:"01097448400",email:"aya.gamal@betatech-eg.com"});
+const $=x=>document.getElementById(x),v=x=>$(x).value.trim();
+const STORAGE_KEY="supplierQuotationSystemData_v1";
+let rfqHistory=JSON.parse(localStorage.getItem("rfqHistory_v1")||"[]"), awards=JSON.parse(localStorage.getItem("rfqAwards_v1")||"{}");
+function saveState(){try{const state=JSON.stringify({companies,suppliers,items,quotes,rfq:{rfqNo:v("rfqNo"),project:v("project"),department:v("department"),requester:v("requester"),date:v("date"),closing:v("closing"),currency:v("currency"),vat:v("vat")}});localStorage.setItem(STORAGE_KEY,state);if(window.SQ_SHARED_TOKEN)fetch("/api/shared/state",{method:"PUT",headers:{"Content-Type":"application/json","Authorization":"Bearer "+window.SQ_SHARED_TOKEN},body:JSON.stringify({jsonData:state})}).catch(e=>console.warn("Shared sync failed",e));}catch(e){console.warn("Autosave failed",e)}}
+function loadState(){try{let d=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");if(!d)return;if(Array.isArray(d.companies))companies=[...new Set([...companies,...d.companies])];if(Array.isArray(d.suppliers)){suppliers=d.suppliers.map((s,i)=>({...s,id:s.id||("legacy_"+i),documents:Array.isArray(s.documents)?s.documents:[]}));companies.forEach(company=>{if(!suppliers.some(s=>s.company===company))suppliers.push({id:"company_"+company,company,name:"",phone:"",email:""})});}if(Array.isArray(d.items))items=d.items;if(Array.isArray(d.quotes))quotes=d.quotes;if(d.rfq)Object.entries(d.rfq).forEach(([k,val])=>{if($(k))$(k).value=val})}catch(e){console.warn("Saved data could not be loaded",e)}}
+
+function field(id,label,ph="",type="text"){return `<div class="field"><label>${label}</label><input id="${id}" type="${type}" placeholder="${ph}"></div>`}
+function select(id,label,opts){return `<div class="field"><label>${label}</label><select id="${id}">${opts.map(o=>`<option>${o}</option>`).join("")}</select></div>`}
+$("rfq").innerHTML=field("rfqNo","RFQ No.","RFQ-2026-001")+field("project","Request / Project","Project name")+field("department","Department","Department")+field("requester","Request By","Name")+field("date","RFQ Date","","date")+field("closing","Closing Date","","date")+field("currency","Currency","EGP")+field("vat","VAT %","14","number");
+$("supplier").innerHTML=select("company","Company",companies)+select("supplierName","Supplier",[])+field("phone","Phone","Phone","tel")+field("email","Email","Email","email");
+$("item").innerHTML=select("itemName","Item / Description",[])+field("price","Price","0","number");
+const pages=[["Data Entry","entry"],["Price Comparison","comparison"],["Suppliers","suppliers"],["Items","itemsMaster"],["Item Sheets","items"],["Summary","summary"],["Backup","backupSheet"],["Decision History","quotationDecisionHistory"],["RFQ History","rfqHistory"],["Settings","settings"]];
+const pageIcons=["📝","📊","🏢","📦","📄","🏆","💾","📜","🗂","⚙️"];$("nav").innerHTML=pages.map((p,i)=>`<button class="${i===0?"active":""}" onclick="tab('${p[1]}',this)"><span class="nav-icon" aria-hidden="true">${pageIcons[i]}</span><span>${p[0]}</span></button>`).join("");const settingsNavButton=[...$("nav").querySelectorAll("button")].find(b=>b.textContent.includes("Settings")||b.textContent.includes("الإعدادات"));const portalNavButton=document.createElement("a");portalNavButton.className="nav-portal-button";portalNavButton.href="portal.html";portalNavButton.innerHTML='<span class="nav-icon" aria-hidden="true">👤</span><span>My Portal</span>';$("nav").insertBefore(portalNavButton,settingsNavButton);$("rfqNo").value="RFQ-2026-001";$("vat").value=14;
+const appLangLabels={en:["Data Entry","Price Comparison","Suppliers","Items","Item Sheets","Summary","Backup","Decision History","RFQ History","Settings"],ar:["إدخال البيانات","مقارنة الأسعار","الموردون","الأصناف","شيتات الأصناف","الملخص","النسخ الاحتياطي","سجل القرارات","سجل طلبات الأسعار","الإعدادات"]};
+function applyAppLanguage(lang){localStorage.setItem("rfqAppLanguage",lang);document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";document.body.dir=lang==="ar"?"rtl":"ltr";document.querySelectorAll("#nav button span:not(.nav-icon)").forEach((span,i)=>span.textContent=(appLangLabels[lang]||appLangLabels.en)[i]||"Settings");let titles={entry:["📝 Supplier Quotation Data Entry","📝 إدخال بيانات عروض الموردين"],comparison:["📊 SUPPLIER PRICE COMPARISON","📊 مقارنة أسعار الموردين"],suppliers:["🏢 Suppliers","🏢 الموردون"],itemsMaster:["📦 Items","📦 الأصناف"],items:["📄 Item Sheets","📄 شيتات الأصناف"],summary:["🏆 Summary","🏆 الملخص"],backupSheet:["💾 Manual Backup","💾 النسخ الاحتياطي"],quotationDecisionHistory:["📜 QUOTATION DECISION HISTORY","📜 سجل قرارات عروض الأسعار"],rfqHistory:["🗂 RFQ History","🗂 سجل طلبات الأسعار"],settings:["⚙️ SETTINGS","⚙️ الإعدادات"]};document.querySelectorAll("main>section").forEach(sec=>{let pair=titles[sec.id];if(pair){let h=sec.querySelector("h2");if(h)h.textContent=pair[lang==="ar"?1:0]}});let sub=document.querySelector("header>div");if(sub)sub.textContent=lang==="ar"?"طلب عرض سعر • إدخال البيانات • مقارنة الأسعار • شيتات الأصناف • النسخ الاحتياطي":"RFQ • Data Entry • Comparison • Item Sheets • Manual Backup";let settingsTitle=document.querySelector("#settings .section-label");if(settingsTitle&&lang==="ar")settingsTitle.innerHTML="<span>01</span> الإعدادات العامة";let settingLabelMap={ "Interface Language":"لغة الواجهة","Currency":"العملة","Company Name":"اسم الشركة","Theme":"المظهر","Default VAT Rate (%)":"نسبة ضريبة القيمة المضافة الافتراضية (%)","Default RFQ Prefix":"بادئة طلب عرض السعر","GENERAL SETTINGS":"الإعدادات العامة","RFQ DEFAULTS":"إعدادات RFQ الافتراضية","Save Settings":"حفظ الإعدادات","Reset Settings":"إعادة ضبط الإعدادات"};document.querySelectorAll("#settings label,#settings .section-label,#settings button").forEach(el=>{let key=el.textContent.trim();if(lang==="ar"&&settingLabelMap[key])el.textContent=settingLabelMap[key]});}
+function saveSettings(){let settings={language:$("settingLanguage").value,currency:$("settingCurrency").value,companyName:$("settingCompanyName").value,theme:$("settingTheme").value,vat:$("settingVat").value,rfqPrefix:$("settingRfqPrefix").value};localStorage.setItem("rfqAppSettings",JSON.stringify(settings));$("vat").value=settings.vat||14;applyAppLanguage(settings.language);applySettingsTheme(settings.theme);alert("Settings saved.");}
+function applySettingsTheme(theme){let root=document.documentElement;document.body.classList.toggle("dark-theme",theme==="dark");document.body.classList.toggle("purple-theme",theme==="purple");root.style.setProperty("--navy",theme==="dark"?"#172638":theme==="purple"?"#21153f":"#203955");root.style.setProperty("--navy-deep",theme==="dark"?"#101d2b":theme==="purple"?"#100b22":"#1d3552");}
+function resetSettings(){if(!confirm("Reset settings to defaults?"))return;localStorage.removeItem("rfqAppSettings");localStorage.removeItem("rfqAppLanguage");$("settingLanguage").value="en";$("settingCurrency").value="EGP";$("settingCompanyName").value="";$("settingTheme").value="navy";$("settingVat").value="14";$("settingRfqPrefix").value="RFQ";applyAppLanguage("en");applySettingsTheme("navy");}
+(function loadAppSettings(){let s={};try{s=JSON.parse(localStorage.getItem("rfqAppSettings")||"{}")}catch(e){}$("settingLanguage").value=s.language||localStorage.getItem("rfqAppLanguage")||"en";$("settingCurrency").value=s.currency||"EGP";$("settingCompanyName").value=s.companyName||"";$("settingTheme").value=s.theme||"navy";$("settingVat").value=s.vat||14;$("settingRfqPrefix").value=s.rfqPrefix||"RFQ";applyAppLanguage($("settingLanguage").value);applySettingsTheme(s.theme||"navy");})();
+
+function tab(id,b){document.querySelectorAll("main>section").forEach(s=>s.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");draw()}
+
+function toggleNav(){document.body.classList.toggle("nav-hidden");localStorage.setItem("rfqNavHidden",document.body.classList.contains("nav-hidden")?"1":"0");}
+(function setupNavResize(){let stored=Number(localStorage.getItem("rfqNavWidth")||190);stored=Math.max(120,Math.min(360,stored));document.body.style.setProperty("--nav-width",stored+"px");if(localStorage.getItem("rfqNavHidden")==="1")document.body.classList.add("nav-hidden");let grip=$("navResize"),startX,startW;grip.addEventListener("mousedown",e=>{startX=e.clientX;startW=parseFloat(getComputedStyle(document.body).getPropertyValue("--nav-width"))||190;function move(ev){let w=Math.max(120,Math.min(360,startW+(ev.clientX-startX)));document.body.style.setProperty("--nav-width",w+"px");localStorage.setItem("rfqNavWidth",String(Math.round(w)));}function up(){document.removeEventListener("mousemove",move);document.removeEventListener("mouseup",up)}document.addEventListener("mousemove",move);document.addEventListener("mouseup",up);});})();
+function add(withTax){let name=v("itemName"),supplierId=v("supplierName"),company=v("company"),supplierRecord=suppliers.find(s=>String(s.id)===String(supplierId)),supplier=supplierRecord?.name||"",price=Number(v("price"));if(!name||!supplierRecord||!Number.isFinite(price)||price<0){alert("Select item, supplier and enter valid price.");return}
+let it=items.find(x=>x.name.toLowerCase()===name.toLowerCase());if(!it){alert("Please add this item in Items tab first.");return}
+let tax=Number(v("vat")||14)/100,unit=withTax?price:price*(1+tax);quotes=quotes.filter(q=>!(q.itemId===it.id&&q.company===company&&String(q.supplierId||"")===String(supplierId)));quotes.push({itemId:it.id,company,supplier,supplierId,price:unit,total:unit*(Number(it.qty)||1),qty:Number(it.qty)||1,uom:it.uom||"Unit",comment:it.comment||""});
+Object.assign(supplierRecord,{phone:v("phone"),email:v("email")});$("price").value="";draw();saveState();alert("Quotation added.");}
+function clearForm(){["supplierName","phone","email","itemName","price"].forEach(x=>$(x).value="");}
+function loadSelectedItemDetails(){let it=items.find(x=>x.name===v("itemName"));if(it){/* item details are maintained in Items tab and used internally */}}
+function searchItem(){let it=items.find(x=>x.name.toLowerCase()===v("itemName").toLowerCase());if(it){alert("Item details are loaded from Items tab: "+it.name+" | Qty: "+(it.qty||1)+" | UoM: "+(it.uom||"Unit"))}else alert("Item not found")}
+function offer(it,c){return quotes.find(q=>q.itemId===it.id&&q.company===c)}function fmt(n){return Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}function esc(s){return String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function comparisonCompanies(){return companies.filter(c=>quotes.some(q=>q.company===c));}
+function makeResizableComparison(){let table=$("comp"),key="rfqCompColumnWidths";let saved={};try{saved=JSON.parse(localStorage.getItem(key)||"{}")}catch{};table.querySelectorAll("th").forEach((th,i)=>{if(saved[i])th.style.width=saved[i]+"px";let handle=document.createElement("span");handle.className="resize-handle";handle.title="Drag to resize column";th.appendChild(handle);let startX,startW;handle.addEventListener("mousedown",e=>{e.preventDefault();startX=e.clientX;startW=th.getBoundingClientRect().width;function move(ev){let w=Math.max(65,startW+(ev.clientX-startX));th.style.width=w+"px";saved[i]=Math.round(w)}function up(){localStorage.setItem(key,JSON.stringify(saved));document.removeEventListener("mousemove",move);document.removeEventListener("mouseup",up)}document.addEventListener("mousemove",move);document.addEventListener("mouseup",up)});});}
+function draw(){let selectedItem=$("itemName")?.value;let companySelect=$("company");if(companySelect){let currentCompany=companySelect.value;companySelect.innerHTML=companies.map(c=>`<option>${esc(c)}</option>`).join("");if(currentCompany&&companies.includes(currentCompany))companySelect.value=currentCompany;changeCompanySupplier();}if($("itemName")){$("itemName").innerHTML='<option value="">Select item...</option>'+items.map(it=>`<option value="${esc(it.name)}">${esc(it.name)}</option>`).join("");if(selectedItem&&items.some(it=>it.name===selectedItem))$("itemName").value=selectedItem;loadSelectedItemDetails();}let visibleCompanies=comparisonCompanies();let html=`<tr><th>#</th><th>Item / Description</th><th>Comment</th>${visibleCompanies.map(c=>`<th class="company-price-head"><div class="company-head-name">${esc(c)}</div><button class="red company-remove-btn" title="Remove ${esc(c)}" aria-label="Remove ${esc(c)}" data-company="${esc(c)}" onclick="removeCompany(this.dataset.company)">✖</button></th>`).join("")}<th>Lowest Price</th><th>Lowest Company</th><th>2nd Lowest</th><th>3rd Lowest</th><th>Award Supplier</th><th>Award Reason</th><th>Actions</th></tr>`;html+=items.map((it,i)=>{let sorted=quotes.filter(q=>q.itemId===it.id).sort((a,b)=>a.price-b.price);return `<tr><td>${i+1}</td><td>${esc(it.name)}</td><td>${esc(it.comment)}</td>${visibleCompanies.map(c=>{let best=quotes.filter(q=>q.itemId===it.id&&q.company===c).sort((a,b)=>a.price-b.price)[0];return `<td>${best?fmt(best.price):"—"}</td>`}).join("")}<td class="lowest">${sorted[0]?fmt(sorted[0].price):"—"}</td><td class="lowest">${sorted[0]?esc(sorted[0].company):"—"}</td><td>${sorted[1]?fmt(sorted[1].price):"—"}</td><td>${sorted[2]?fmt(sorted[2].price):"—"}</td><td><select id="awardSupplier_${it.id}" onchange="setAward(${it.id})"><option value="">— Not awarded —</option>${[...new Set(quotes.filter(q=>q.itemId===it.id).map(q=>q.company))].map(c=>`<option value="${esc(c)}" ${awards[it.id]?.supplier===c?"selected":""}>${esc(c)}</option>`).join("")}</select></td><td><input id="awardReason_${it.id}" placeholder="Award justification" value="${esc(awards[it.id]?.reason||"")}" onchange="setAward(${it.id})"></td><td><button class="red" style="font-size:11px;padding:4px 6px" onclick="deleteMasterItem(${it.id})">✖ Remove Item</button></td></tr>`}).join("");$("comp").innerHTML=html;makeResizableComparison();
+renderRfqHistory();$("kpis").innerHTML=`<p><b>RFQ:</b> ${esc(v("rfqNo"))} &nbsp; <b>Items:</b> ${items.length} &nbsp; <b>Suppliers:</b> ${suppliers.filter(s=>s.name).length}</p>`;
+$("supplierCards").innerHTML=`<div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><input id="newCompanyName" placeholder="New company name" style="padding:9px;border:1px solid #d5a21b;background:#fff5cf;border-radius:6px;min-width:220px"><button class="green" onclick="addCompany()">＋ Add Company</button></div>`+companies.map(company=>{let group=suppliers.filter(s=>s.company===company);return `<div class="card"><h3>${esc(company)}</h3><button class="green" onclick="addSupplierForCompany('${esc(company).replaceAll("'","\\'")}')">＋ Add Supplier</button>`+group.map(s=>`<div style="border-top:1px solid #cbd5e1;margin-top:10px;padding-top:8px"><b>${esc(s.name||"Supplier not entered")}</b><div class="field"><label>Supplier Name</label><input id="editSupplier_${s.id}" value="${esc(s.name||"")}" placeholder="Supplier name"></div><div class="field"><label>Phone</label><input id="editPhone_${s.id}" value="${esc(s.phone||"")}" placeholder="Phone" type="tel"></div><div class="field"><label>Email</label><input id="editEmail_${s.id}" value="${esc(s.email||"")}" placeholder="Email" type="email"></div><button class="green" onclick="saveSupplierEdit('${s.id}')">💾 Save Supplier</button> <button class="red" onclick="removeSupplierRecord('${s.id}')">Remove Supplier</button><div style="margin-top:14px;padding:12px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px"><h4 style="margin:0 0 10px;color:#203955">📄 Company Documents</h4><div class="field"><label>Document Type</label><select id="docType_${s.id}"><option>Commercial Register</option><option>Tax Card</option><option>VAT Certificate</option><option>Company Profile</option><option>Other Docs</option></select></div><div class="field"><label>Document Number</label><input id="docNumber_${s.id}" placeholder="Document number"></div><div class="field"><label>Issue Date</label><input id="docIssue_${s.id}" type="date"></div><div class="field"><label>Expiry Date</label><input id="docExpiry_${s.id}" type="date"></div><div class="field"><label>Attachment (PDF or image)</label><input id="docFile_${s.id}" type="file" accept=".pdf,image/*" onchange="selectSupplierDocFile('${s.id}')"></div><button class="green" onclick="addSupplierDocument('${s.id}')">＋ Add Document</button><div style="margin-top:10px">${(s.documents||[]).map((d,di)=>`<div style="padding:9px;margin-top:7px;background:white;border:1px solid #cbd5e1;border-radius:6px"><b>${esc(d.type)}</b> — ${esc(d.number||"No number")}<br><small>Issue: ${esc(d.issue||"—")} | Expiry: ${esc(d.expiry||"—")} | Status: <b style="color:${docStatus(d)==="Expired"?"#b91c1c":docStatus(d)==="Missing"?"#b45309":"#15803d"}">${docStatus(d)}</b></small><br>${d.fileName?`<a href="${d.data}" download="${esc(d.fileName)}">📎 ${esc(d.fileName)}</a>`:"No attachment"} <button class="red" onclick="removeSupplierDocument('${s.id}',${di})" style="margin-top:6px">Remove Document</button></div>`).join("")||"<small>No documents added yet.</small>"}</div></div></div>`).join("")+`<button class="red" style="margin-top:10px" onclick="removeCompany('${esc(company).replaceAll("'","\\'")}')">Remove Company</button></div>`}).join("");
+$("itemName").innerHTML="<option value=\"\">Select item...</option>"+items.map(it=>`<option value=\"${esc(it.name)}\">${esc(it.name)}</option>`).join("");if(selectedItem&&items.some(it=>it.name===selectedItem))$("itemName").value=selectedItem;$("masterItemsTable").innerHTML="<tr><th>#</th><th>Item / Description</th><th>Quantity</th><th>UoM</th><th>Components / Comment</th><th>Actions</th></tr>"+items.map((it,i)=>`<tr><td>${i+1}</td><td>${esc(it.name)}</td><td>${it.qty||1}</td><td>${esc(it.uom||"Unit")}</td><td>${esc(it.comment||"")}</td><td><button class=\\"blue\\" onclick=\\"editMasterItem(${it.id})\\">Edit</button> <button class=\\"red\\" onclick=\\"deleteMasterItem(${it.id})\\">Delete</button></td></tr>`).join("");$("itemPick").innerHTML=items.map(it=>`<option value="${it.id}">Item ${it.id} — ${esc(it.name)}</option>`).join("");itemSheet();
+let ranks=companies.map(c=>({c,total:items.reduce((sum,it)=>sum+(quotes.filter(q=>q.itemId===it.id&&q.company===c).sort((a,b)=>a.price-b.price)[0]?.total||0),0),awardedTotal:items.reduce((sum,it)=>{let a=awards[it.id];return sum+(a?.supplier===c?(quotes.find(q=>q.itemId===it.id&&q.company===c)?.total||0):0)},0),awardedCount:items.filter(it=>awards[it.id]?.supplier===c).length})).sort((a,b)=>a.total-b.total);let awardRows=items.map(it=>{let a=awards[it.id]||{},q=quotes.find(q=>q.itemId===it.id&&q.company===a.supplier);return `<tr><td>${esc(it.name)}</td><td>${esc(a.supplier||"Not awarded")}</td><td>${q?fmt(q.total):"—"}</td><td>${esc(a.reason||"—")}</td></tr>`}).join("");$("summ").innerHTML="<tr><th>Rank</th><th>Company</th><th>Lowest Total</th><th>Awarded Items</th><th>Awarded Total</th></tr>"+ranks.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.c)}</td><td>${fmt(r.total)}</td><td>${r.awardedCount}</td><td>${fmt(r.awardedTotal)}</td></tr>`).join("")+`<tr><th colspan="5">Award Decisions by Item</th></tr><tr><th>Item</th><th>Award Supplier</th><th>Award Price</th><th colspan="2">Reason</th></tr>${awardRows}`;
+$("backs").innerHTML="<tr><th>#</th><th>Saved at</th><th>RFQ</th><th>Project</th><th>Items</th><th>Supplier count</th></tr>"+backups.map((b,i)=>`<tr><td>${i+1}</td><td>${new Date(b.time).toLocaleString()}</td><td>${esc(b.rfq)}</td><td>${esc(b.project)}</td><td>${b.items.length}</td><td>${b.suppliers.filter(s=>s.name).length}</td></tr>`).join("")}
+
+function saveMasterItem(){
+ let name=$("masterItemName").value.trim(),qty=Number($("masterItemQty").value||1),uom=$("masterItemUom").value.trim()||"Unit",comment=$("masterItemComment").value.trim();
+ if(!name||!Number.isFinite(qty)||qty<=0){alert("Enter item description and a valid quantity.");return}
+ let existing=items.find(x=>x.name.toLowerCase()===name.toLowerCase()&&x.id!==editingMasterItemId);
+ if(existing){alert("An item with this description already exists.");return}
+ if(editingMasterItemId!==null){let it=items.find(x=>x.id===editingMasterItemId);if(!it)return;Object.assign(it,{name,qty,uom,comment});editingMasterItemId=null;$("masterSaveBtn").textContent="＋ Add Item";}
+ else items.push({id:Math.max(0,...items.map(x=>x.id))+1,name,qty,uom,comment});
+ clearMasterItem();draw();saveState();alert("Item saved.");
+}
+function clearMasterItem(){editingMasterItemId=null;$("masterItemName").value="";$("masterItemQty").value=1;$("masterItemUom").value="";$("masterItemComment").value="";$("masterSaveBtn").textContent="＋ Add Item";}
+function editMasterItem(id){let it=items.find(x=>x.id===id);if(!it)return;editingMasterItemId=id;$("masterItemName").value=it.name;$("masterItemQty").value=it.qty||1;$("masterItemUom").value=it.uom||"Unit";$("masterItemComment").value=it.comment||"";$("masterSaveBtn").textContent="💾 Update Item";window.scrollTo({top:0,behavior:"smooth"});}
+function deleteMasterItem(id){let it=items.find(x=>x.id===id);if(!it)return;if(!confirm("Delete this item and its quotations?"))return;items=items.filter(x=>x.id!==id);quotes=quotes.filter(q=>q.itemId!==id);if(editingMasterItemId===id)clearMasterItem();draw();saveState();}
+
+function itemSheet(){let it=items.find(x=>x.id===Number($("itemPick").value));if(!it){$("itemView").innerHTML="<p>Enter items to see item sheet preview.</p>";return}let top=quotes.filter(q=>q.itemId===it.id).sort((a,b)=>a.price-b.price).slice(0,3),award=awards[it.id]||{},awardedQuote=quotes.find(q=>q.itemId===it.id&&q.company===award.supplier);$("itemView").innerHTML=`<div class="panel"><h2>TOP 3 LOWEST QUOTATIONS — ITEM ${it.id}</h2><div class="inside"><b>Item Description:</b> ${esc(it.name)}<p>${esc(it.comment)}</p><div class="panel"><b>🏆 Awarded Supplier:</b> ${esc(award.supplier||"Not awarded")} &nbsp; <b>Award Price:</b> ${awardedQuote?fmt(awardedQuote.price):"—"}<p><b>Award Reason:</b> ${esc(award.reason||"—")}</p></div><table><tr><th>Rank</th><th>Company</th><th>Price</th><th>Award Status</th></tr>${[0,1,2].map(i=>`<tr><td>${i+1}</td><td>${top[i]?esc(top[i].company):"—"}</td><td class="${i===0?"lowest":""}">${top[i]?fmt(top[i].price):"—"}</td><td>${top[i]&&award.supplier===top[i].company?"🏆 Awarded":""}</td></tr>`).join("")}</table></div></div>`}
+
+function docStatus(d){if(d.expiry&&d.expiry<new Date().toISOString().slice(0,10))return "Expired";if(!d.data)return "Missing";return "Valid"}
+function selectSupplierDocFile(id){let input=$("docFile_"+id),file=input.files&&input.files[0];if(!file){pendingDocFiles[id]=null;return}if(!(/pdf$/i.test(file.type)||file.type.startsWith("image/"))){alert("Please select a PDF or image file.");input.value="";return}let reader=new FileReader();reader.onload=()=>pendingDocFiles[id]={name:file.name,data:reader.result};reader.readAsDataURL(file)}
+function addSupplierDocument(id){let s=suppliers.find(x=>String(x.id)===String(id));if(!s)return;let type=v("docType_"+id),number=v("docNumber_"+id).trim(),issue=v("docIssue_"+id),expiry=v("docExpiry_"+id),file=pendingDocFiles[id];if(!number){alert("Enter the document number.");return}if(expiry&&issue&&expiry<issue){alert("Expiry date must be after issue date.");return}if(!Array.isArray(s.documents))s.documents=[];s.documents.push({type,number,issue,expiry,fileName:file?.name||"",data:file?.data||""});pendingDocFiles[id]=null;draw();saveState();alert("Document added successfully.")}
+function removeSupplierDocument(id,index){let s=suppliers.find(x=>String(x.id)===String(id));if(!s||!Array.isArray(s.documents))return;if(!confirm("Remove this document?"))return;s.documents.splice(index,1);draw();saveState()}
+function addSupplierForCompany(company){let name=prompt("Supplier name for "+company+":");if(!name||!name.trim())return;let phone=prompt("Supplier phone (optional):")||"",email=prompt("Supplier email (optional):")||"";suppliers.push({id:Date.now()+Math.floor(Math.random()*1000),company,name:name.trim(),phone:phone.trim(),email:email.trim()});draw();saveState();}
+function removeSupplierRecord(id){let s=suppliers.find(x=>String(x.id)===String(id));if(!s)return;if(!confirm("Remove supplier "+s.name+" and its quotations?"))return;quotes=quotes.filter(q=>String(q.supplierId||"")!==String(id));suppliers=suppliers.filter(x=>String(x.id)!==String(id));draw();saveState();}
+function clearAllData(){if(!confirm("This will permanently clear all items, quotations, supplier details and RFQ fields saved in this browser. Continue?"))return;items=[];quotes=[];suppliers=suppliers.map(s=>({...s,name:"",phone:"",email:""}));["rfqNo","project","department","requester","date","closing"].forEach(id=>{if($(id))$(id).value=""});$("vat").value=14;saveState();draw();alert("All quotation data cleared. Company list retained.");}
+function changeCompanySupplier(){let company=v("company"),list=suppliers.filter(s=>s.company===company);$("supplierName").innerHTML=list.map(s=>`<option value="${s.id}">${esc(s.name||"Supplier not entered")}</option>`).join("");let s=list[0];if(s){$("phone").value=s.phone||"";$("email").value=s.email||"";}}
+function saveSupplierEdit(id){let s=suppliers.find(x=>String(x.id)===String(id));if(!s)return;let name=$("editSupplier_"+id).value.trim(),phone=$("editPhone_"+id).value.trim(),email=$("editEmail_"+id).value.trim();if(!name){alert("Supplier name is required.");return}Object.assign(s,{name,phone,email});quotes.forEach(q=>{if(String(q.supplierId||"")===String(id))q.supplier=name});draw();saveState();alert("Supplier updated.");}
+function saveCompanyEdit(i){let s=suppliers[i];if(!s)return;let old=s.company,newName=$("editCompany_"+i).value.trim(),supplierName=$("editSupplier_"+i).value.trim(),phone=$("editPhone_"+i).value.trim(),email=$("editEmail_"+i).value.trim();if(!newName){alert("Company name cannot be empty.");return}if(companies.some(c=>c.toLowerCase()===newName.toLowerCase()&&c!==old)){alert("Company name already exists.");return}if(newName!==old){companies=companies.map(c=>c===old?newName:c);quotes.forEach(q=>{if(q.company===old)q.company=newName});suppliers.forEach(x=>{if(x.company===old)x.company=newName});}Object.assign(s,{company:newName,name:supplierName,phone,email});draw();saveState();alert("Company and supplier details updated.");}
+function addCompany(){let name=$("newCompanyName").value.trim();if(!name){alert("Enter a company name.");return}if(companies.some(c=>c.toLowerCase()===name.toLowerCase())){alert("That company already exists.");return}companies.push(name);suppliers.push({id:"supplier_"+Date.now(),company:name,name:"",phone:"",email:""});draw();saveState();alert("Company added. It is now available in Data Entry and Price Comparison.");}
+function removeCompany(name){if(companies.length<=1){alert("At least one company must remain.");return}if(quotes.some(q=>q.company===name)){if(!confirm("This company has quotations. Remove it and its quotations?"))return;quotes=quotes.filter(q=>q.company!==name)}companies=companies.filter(c=>c!==name);suppliers=suppliers.filter(s=>s.company!==name);draw();saveState();}
+function setAward(itemId){const supplier=$("awardSupplier_"+itemId)?.value||"",reason=$("awardReason_"+itemId)?.value.trim()||"";if(supplier||reason)awards[itemId]={supplier,reason,updatedAt:new Date().toISOString()};else delete awards[itemId];localStorage.setItem("rfqAwards_v1",JSON.stringify(awards));saveState();}
+async function loadQuotationDecisionHistory(){
+ const id=Number($("decisionHistoryQuotationId")?.value),status=$("decisionHistoryStatus"),table=$("decisionHistoryTable");
+ if(!Number.isInteger(id)||id<1){status.textContent="Enter a valid quotation ID.";table.innerHTML="";return;}
+ const token=window.SQ_SHARED_TOKEN||localStorage.getItem("sqAccessToken");
+ if(!token){status.textContent="Please sign in before loading decision history.";table.innerHTML="";return;}
+ status.textContent="Loading decision history…";table.innerHTML="";
+ try{const response=await fetch(`/api/quotations/${id}/decision-history`,{headers:{Authorization:"Bearer "+token},cache:"no-store"});
+ if(response.status===401){status.textContent="Your session is expired. Sign in again.";return;}
+ if(response.status===404){status.textContent="Quotation was not found.";return;}
+ if(!response.ok){status.textContent=`Could not load history (HTTP ${response.status}).`;return;}
+ const data=await response.json(),records=Array.isArray(data.items)?data.items:[];
+ table.innerHTML="<tr><th>Date / Time (UTC)</th><th>Decision</th><th>User</th><th>Role</th><th>Details</th></tr>"+records.map(x=>`<tr><td>${esc(x.occurredUtc?new Date(x.occurredUtc).toLocaleString():"—")}</td><td>${esc(x.action||"—")}</td><td>${esc(x.actorUsername||"—")}</td><td>${esc(x.actorRole||"—")}</td><td>${esc(x.details||"—")}</td></tr>`).join("");
+ status.textContent=records.length?`${records.length} decision record(s) loaded.`:"No approval, rejection or award decisions were recorded for this quotation.";
+ }catch(error){status.textContent="Unable to connect to the API. Check connection and try again.";console.error("Decision history load failed",error);}
+}
+function saveRfqHistory(){const rfqNo=v("rfqNo");if(!rfqNo){alert("Enter an RFQ number before saving history.");return}const snapshot={id:Date.now(),savedAt:new Date().toISOString(),rfq:{rfqNo,project:v("project"),department:v("department"),requester:v("requester"),date:v("date"),closing:v("closing"),currency:v("currency"),vat:v("vat")},companies:[...companies],suppliers:JSON.parse(JSON.stringify(suppliers)),items:JSON.parse(JSON.stringify(items)),quotes:JSON.parse(JSON.stringify(quotes)),awards:JSON.parse(JSON.stringify(awards))};rfqHistory.unshift(snapshot);localStorage.setItem("rfqHistory_v1",JSON.stringify(rfqHistory));draw();renderRfqHistory();alert("RFQ snapshot saved to history.");}
+function renderRfqHistory(){const table=$("rfqHistoryTable");if(!table)return;table.innerHTML=`<tr><th>RFQ No.</th><th>Project</th><th>Saved At</th><th>Items</th><th>Quotes</th><th>Actions</th></tr>`+rfqHistory.map(h=>`<tr><td>${esc(h.rfq?.rfqNo||"")}</td><td>${esc(h.rfq?.project||"")}</td><td>${new Date(h.savedAt).toLocaleString()}</td><td>${h.items?.length||0}</td><td>${h.quotes?.length||0}</td><td><button class="secondary" onclick="loadRfqHistory(${h.id})">Open Snapshot</button> <button class="red" onclick="deleteRfqHistory(${h.id})">Delete</button></td></tr>`).join("");}
+function loadRfqHistory(id){const h=rfqHistory.find(x=>x.id===id);if(!h)return;if(!confirm("Load this saved RFQ snapshot into the active workspace? Current active data will be replaced."))return;companies=[...(h.companies||companies)];suppliers=JSON.parse(JSON.stringify(h.suppliers||[]));items=JSON.parse(JSON.stringify(h.items||[]));quotes=JSON.parse(JSON.stringify(h.quotes||[]));awards=JSON.parse(JSON.stringify(h.awards||{}));if(h.rfq)Object.entries(h.rfq).forEach(([k,val])=>{if($(k))$(k).value=val});localStorage.setItem("rfqAwards_v1",JSON.stringify(awards));saveState();draw();alert("Snapshot loaded.");}
+function deleteRfqHistory(id){if(!confirm("Delete this history snapshot?"))return;rfqHistory=rfqHistory.filter(h=>h.id!==id);localStorage.setItem("rfqHistory_v1",JSON.stringify(rfqHistory));renderRfqHistory();}
+function exportRfqHistory(){dl("RFQ_History.json",JSON.stringify(rfqHistory,null,2));}
+function backup(){backups.push({time:new Date().toISOString(),rfq:v("rfqNo"),project:v("project"),items:JSON.parse(JSON.stringify(items)),quotes:JSON.parse(JSON.stringify(quotes)),suppliers:JSON.parse(JSON.stringify(suppliers)),vat:v("vat")});localStorage.setItem("rfqBackups",JSON.stringify(backups));draw();alert("Manual backup saved locally in this browser.")}
+function clearBackups(){if(confirm("Clear backup history?")){backups=[];localStorage.removeItem("rfqBackups");draw()}}
+function downloadBackups(){dl("Supplier_Quotation_Backups.json",JSON.stringify(backups,null,2))}
+function csv(){let rows=[["Item","Comment",...comparisonCompanies(),"Lowest Price","Lowest Company","2nd Lowest","3rd Lowest"]];items.forEach(it=>{let s=quotes.filter(q=>q.itemId===it.id).sort((a,b)=>a.price-b.price);rows.push([it.name,it.comment,...comparisonCompanies().map(c=>quotes.filter(q=>q.itemId===it.id&&q.company===c).sort((a,b)=>a.price-b.price)[0]?.price||""),s[0]?.price||"",s[0]?.company||"",s[1]?.price||"",s[2]?.price||""])});dl("Price_Comparison.csv",rows.map(r=>r.join(",")).join("\n"))}
+function dl(n,d){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([d]));a.download=n;a.click();URL.revokeObjectURL(a.href)}
+loadState();draw();saveState();
+</script>
+<style id="arabic-rtl-sidebar">
+html[dir="rtl"] nav{left:auto!important;right:0!important;border-right:0!important;border-left:1px solid var(--ui-border)!important}
+html[dir="rtl"] #navResize{left:auto!important;right:calc(var(--nav-width,190px) - 3px)!important}
+html[dir="rtl"] #navToggle{left:auto!important;right:4px!important}
+html[dir="rtl"] main,html[dir="rtl"] header{margin-left:0!important;margin-right:var(--nav-width,190px)!important}
+html[dir="rtl"] nav button{text-align:right;direction:rtl}
+html[dir="rtl"] nav button .nav-icon{margin-left:0}
+html[dir="rtl"] body.nav-hidden #navResize{right:0!important}
+html[dir="rtl"] body.nav-hidden #navToggle{right:4px!important}
+html[dir="rtl"] body.nav-hidden main,html[dir="rtl"] body.nav-hidden header{margin-right:0!important}
+html[dir="rtl"] #settings .grid,html[dir="rtl"] .grid{direction:rtl}
+</style>
+<script id="full-arabic-ui">
+(()=>{
+const translations={
+"SUPPLIER QUOTATION SYSTEM":"نظام عروض أسعار الموردين",
+"RFQ • Data Entry • Comparison • Item Sheets • Manual Backup":"طلب عرض سعر • إدخال البيانات • مقارنة الأسعار • شيتات الأصناف • النسخ الاحتياطي",
+"Supplier Quotation Data Entry":"إدخال بيانات عروض الموردين","SUPPLIER PRICE COMPARISON":"مقارنة أسعار الموردين",
+"SUPPLIERS — ALL IN ONE SHEET":"الموردون — كلهم في شيت واحد","ITEMS — MASTER LIST":"الأصناف — القائمة الرئيسية",
+"ITEM SHEETS — TOP 3 LOWEST":"شيتات الأصناف — أقل 3 أسعار","SUMMARY":"الملخص","BACKUP (MANUAL)":"النسخ الاحتياطي (يدوي)","SETTINGS":"الإعدادات",
+"RFQ DETAILS":"بيانات طلب عرض السعر","COMPANY & SUPPLIER":"الشركة والمورد","ITEM & QUOTATION PRICE":"الصنف وسعر العرض",
+"GENERAL SETTINGS":"الإعدادات العامة","RFQ DEFAULTS":"الإعدادات الافتراضية لطلب عرض السعر",
+"Search Item":"بحث عن صنف","ADD WITH TAX":"إضافة شامل الضريبة","ADD WITHOUT TAX":"إضافة بدون الضريبة","CLEAR":"مسح",
+"Without Tax price is converted using the VAT rate. With Tax price is saved as entered.":"يتم تحويل السعر بدون الضريبة باستخدام نسبة القيمة المضافة. أما السعر شامل الضريبة فيُحفظ كما تم إدخاله.",
+"CLEAR ALL DATA":"مسح كل البيانات","SAVE PRICE BACKUP (MANUAL)":"حفظ نسخة احتياطية للأسعار (يدوي)","Export CSV":"تصدير CSV",
+"Add Item":"إضافة صنف","Manage your items here. Changes are reflected in Data Entry, Price Comparison and Item Sheets.":"يمكنك إدارة الأصناف هنا. التغييرات تظهر في إدخال البيانات ومقارنة الأسعار وشيتات الأصناف.",
+"Item Components / Comment":"مكونات الصنف / تعليق","Item / Description":"الصنف / الوصف","Components and specifications...":"المكونات والمواصفات...","Enter item description":"أدخل وصف الصنف","Quantity":"الكمية","UoM":"وحدة القياس","Unit":"وحدة",
+"Item":"الصنف","Company":"الشركة","Supplier":"المورد","Phone":"الهاتف","Email":"البريد الإلكتروني","Price":"السعر","Comment":"تعليق",
+"Lowest Price":"أقل سعر","Lowest Company":"الشركة صاحبة أقل سعر","2nd Lowest":"ثاني أقل سعر","3rd Lowest":"ثالث أقل سعر","Actions":"الإجراءات",
+"RFQ No.":"رقم طلب عرض السعر","Request / Project":"الطلب / المشروع","Project name":"اسم المشروع","Department":"الإدارة","Request By":"مقدم الطلب","Name":"الاسم","RFQ Date":"تاريخ طلب عرض السعر","Closing Date":"تاريخ الإغلاق","Currency":"العملة","VAT %":"نسبة الضريبة %",
+"Item Sheets":"شيتات الأصناف","Backup is saved only when the Save Price Backup button is pressed. Saved in this browser.":"يتم حفظ النسخة الاحتياطية عند الضغط على زر حفظ نسخة الأسعار فقط. تُحفظ في هذا المتصفح.",
+"Download Backup JSON":"تحميل ملف النسخة الاحتياطية JSON","Clear Backup History":"مسح سجل النسخ الاحتياطية",
+"Interface Language":"لغة الواجهة","Company Name":"اسم الشركة","Your company name":"اسم شركتك","Theme":"المظهر","Light (Default)":"فاتح (افتراضي)","Dark":"داكن","Purple":"بنفسجي",
+"Default VAT Rate (%)":"نسبة ضريبة القيمة المضافة الافتراضية (%)","Default RFQ Prefix":"بادئة طلب عرض السعر","Save Settings":"حفظ الإعدادات","Reset Settings":"إعادة ضبط الإعدادات",
+"Settings are saved in this browser. Language selection changes the navigation and main section titles; other app fields remain in their existing language for now.":"يتم حفظ الإعدادات في هذا المتصفح. اختيار اللغة يغيّر لغة واجهة التطبيق بالكامل.",
+"Save Price Backup":"حفظ نسخة احتياطية للأسعار","Date":"التاريخ","Status":"الحالة","Lowest":"الأقل",
+"Enter a company name.":"أدخل اسم الشركة.","That company already exists.":"الشركة موجودة بالفعل.","Company added. It is now available in Data Entry and Price Comparison.":"تمت إضافة الشركة. أصبحت متاحة في إدخال البيانات ومقارنة الأسعار.",
+"Settings saved.":"تم حفظ الإعدادات.","Reset settings to defaults?":"هل تريد إعادة الإعدادات إلى الوضع الافتراضي؟",
+"English":"الإنجليزية","EGP — Egyptian Pound":"جنيه مصري — EGP","USD — US Dollar":"دولار أمريكي — USD","EUR — Euro":"يورو — EUR","SAR — Saudi Riyal":"ريال سعودي — SAR","AED — UAE Dirham":"درهم إماراتي — AED"
+};
+const reverse={};Object.entries(translations).forEach(([en,ar])=>reverse[ar]=en);
+
+const extraTranslations={
+"Search Item":"بحث عن صنف","ADD WITH TAX":"إضافة شامل الضريبة","ADD WITHOUT TAX":"إضافة بدون الضريبة","CLEAR":"مسح",
+"CLEAR ALL DATA":"مسح كل البيانات","SAVE PRICE BACKUP (MANUAL)":"حفظ نسخة أسعار (يدوي)","Export CSV":"تصدير CSV",
+"Add Item":"إضافة صنف","Download Backup JSON":"تحميل نسخة احتياطية JSON","Clear Backup History":"مسح سجل النسخ الاحتياطية",
+"Save Settings":"حفظ الإعدادات","Reset Settings":"إعادة ضبط الإعدادات","Add Company":"إضافة شركة","Add Supplier":"إضافة مورد",
+"Save Supplier":"حفظ المورد","Remove Supplier":"حذف المورد","Add Document":"إضافة مستند","Remove Document":"حذف المستند",
+"Remove Company":"حذف الشركة","Edit":"تعديل","Delete":"حذف","Remove Item":"حذف الصنف",
+"Save":"حفظ","Cancel":"إلغاء","Close":"إغلاق","Update":"تحديث","Search":"بحث","Select":"اختر",
+"Company name":"اسم الشركة","New company name":"اسم الشركة الجديدة","Supplier name":"اسم المورد","Item name":"اسم الصنف",
+"Add":"إضافة","Reset":"إعادة ضبط","Back":"رجوع","Next":"التالي","Previous":"السابق",
+"Price Comparison":"مقارنة الأسعار","Data Entry":"إدخال البيانات","Suppliers":"الموردون","Items":"الأصناف",
+"Item Sheets":"شيتات الأصناف","Summary":"الملخص","Backup":"النسخ الاحتياطي","Settings":"الإعدادات",
+"Lowest Price":"أقل سعر","Lowest Company":"الشركة صاحبة أقل سعر","2nd Lowest":"ثاني أقل سعر","3rd Lowest":"ثالث أقل سعر",
+"Item / Description":"الصنف / الوصف","Quantity":"الكمية","UoM":"وحدة القياس","Comment":"تعليق","Actions":"الإجراءات",
+"Company Documents":"مستندات الشركة","Document Type":"نوع المستند","Document Number":"رقم المستند",
+"Issue Date":"تاريخ الإصدار","Expiry Date":"تاريخ الانتهاء","Attachment":"المرفق","Status":"الحالة",
+"Valid":"ساري","Expired":"منتهي","No file selected":"لم يتم اختيار ملف","Choose File":"اختيار ملف",
+"Enter company name":"أدخل اسم الشركة","Enter supplier name":"أدخل اسم المورد","Enter item description":"أدخل وصف الصنف",
+"Components and specifications...":"المكونات والمواصفات...","New company name":"اسم الشركة الجديدة",
+"Are you sure you want to clear all data?":"هل أنت متأكد من مسح جميع البيانات؟",
+"Are you sure?":"هل أنت متأكد؟","Settings saved.":"تم حفظ الإعدادات."
+};
+Object.assign(translations,extraTranslations);
+Object.entries(extraTranslations).forEach(([en,ar])=>reverse[ar]=en);
+function normalizedText(s){return s.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"").replace(/[＋↺🗑▣💾🔎]/g,"").replace(/\s+/g," ").trim();}
+function translateNode(node,lang){
+ const dict=lang==="ar"?translations:reverse;
+ const normalizedDict={};
+ Object.entries(dict).forEach(([k,v])=>normalizedDict[normalizedText(k)]=v);
+ if(node.nodeType===Node.TEXT_NODE){
+  const raw=node.nodeValue, t=raw.trim(), key=normalizedText(t);
+  if(dict[t]) node.nodeValue=raw.replace(t,dict[t]);
+  else if(normalizedDict[key]) node.nodeValue=raw.replace(t,normalizedDict[key]);
+ }else if(node.nodeType===Node.ELEMENT_NODE && !["SCRIPT","STYLE"].includes(node.tagName)){
+  ["placeholder","title","aria-label","data-label"].forEach(attr=>{
+   const v=node.getAttribute(attr);if(v&&(dict[v]||normalizedDict[normalizedText(v)]))node.setAttribute(attr,dict[v]||normalizedDict[normalizedText(v)]);
+  });
+  node.childNodes.forEach(n=>translateNode(n,lang));
+ }
+}
+function translateWhole(lang){document.body.childNodes.forEach(n=>translateNode(n,lang));}
+const observer=new MutationObserver(()=>{let lang=document.documentElement.lang||"en";translateWhole(lang)});
+observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+window.addEventListener("load",()=>translateWhole(document.documentElement.lang||"en"));
+window.addEventListener("storage",()=>translateWhole(document.documentElement.lang||"en"));
+})();
+</script>
+
+<div id="sqLogin" style="display:none;position:fixed;inset:0;z-index:99999;background:#101d2b;align-items:center;justify-content:center;padding:20px">
+ <form id="sqLoginForm" style="width:min(420px,100%);background:#1b2735;border:1px solid #344455;border-radius:16px;padding:28px;color:#e7eef7;box-shadow:0 20px 70px #0006">
+  <div style="font-size:12px;color:#91b6df;letter-spacing:2px;margin-bottom:8px">SHARED WORKSPACE</div>
+  <h2 style="margin:0 0 6px;font-size:24px">Supplier Quotation System</h2><p style="color:#aab9c9;margin:0 0 22px">Sign in to access shared company data.</p>
+  <label style="display:block;margin:12px 0 6px">Username</label><input id="sqUsername" autocomplete="username" required style="width:100%;box-sizing:border-box;padding:12px;border-radius:8px;border:1px solid #45586b;background:#253445;color:#fff">
+  <label style="display:block;margin:12px 0 6px">Password</label><input id="sqPassword" type="password" autocomplete="current-password" required style="width:100%;box-sizing:border-box;padding:12px;border-radius:8px;border:1px solid #45586b;background:#253445;color:#fff">
+  <button style="width:100%;margin-top:20px;padding:12px;border:0;border-radius:8px;background:#3c78b8;color:#fff;font-weight:700;cursor:pointer">Sign In</button>
+  <div id="sqLoginError" style="color:#ff9e9e;margin-top:12px;min-height:18px;font-size:13px"></div>
+ </form>
+</div>
+<script id="sq-shared-auth">
+(()=> {
+ const tokenKey="sqAccessToken";
+ const login=document.getElementById("sqLogin"), form=document.getElementById("sqLoginForm"), err=document.getElementById("sqLoginError");
+ const showLogin=()=>{login.style.display="flex";document.body.style.overflow="hidden"};
+ const hideLogin=()=>{login.style.display="none";document.body.style.overflow=""};
+ async function syncAndUnlock(token){
+   window.SQ_SHARED_TOKEN=token;
+   try{
+     const res=await fetch("/api/shared/state",{headers:{Authorization:"Bearer "+token}});
+     if(res.status===401){localStorage.removeItem(tokenKey);showLogin();return;}
+     if(!res.ok)throw new Error("Unable to load shared data");
+     const remotePayload=await res.json();
+     // API serializes JsonData string as JSON response; decode outer layer.
+     const remote=typeof remotePayload==="string" ? remotePayload : JSON.stringify(remotePayload ?? {});
+     const key="supplierQuotationSystemData_v1";
+     const normalize=(value)=>{
+       try { return JSON.stringify(JSON.parse(value || "{}")); }
+       catch { return value || "{}"; }
+     };
+     if(remote && normalize(remote)!=="{}"){
+       const local=localStorage.getItem(key)||"{}";
+       if(normalize(local)!==normalize(remote)){
+         localStorage.setItem(key,remote);
+         location.reload();
+         return;
+       }
+     }else{
+       const local=localStorage.getItem(key)||"{}";
+       await fetch("/api/shared/state",{method:"PUT",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify({jsonData:local})});
+     }
+     hideLogin();
+   }catch(e){err.textContent="Server connection error. Please try again.";showLogin();}
+ }
+ const existing=localStorage.getItem(tokenKey);
+ if(existing)syncAndUnlock(existing);else showLogin();
+ form.addEventListener("submit",async e=>{
+   e.preventDefault();err.textContent="";
+   try{
+     const res=await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:document.getElementById("sqUsername").value.trim(),password:document.getElementById("sqPassword").value})});
+     if(!res.ok){err.textContent="Invalid username or password.";return;}
+     const data=await res.json();localStorage.setItem(tokenKey,data.accessToken);location.reload();
+   }catch(e){err.textContent="Could not connect to the server.";}
+ });
+})();
+window.addEventListener("storage",e=>{if(e.key==="rfqAppSettings"||e.key==="rfqAppLanguage"){let prefs={};try{prefs=JSON.parse(localStorage.getItem("rfqAppSettings")||"{}")}catch{}const lang=prefs.language||localStorage.getItem("rfqAppLanguage")||"en",theme=prefs.theme||"navy";if(typeof applyAppLanguage==="function")applyAppLanguage(lang);if(typeof applySettingsTheme==="function")applySettingsTheme(theme);const langSelect=document.getElementById("settingLanguage"),themeSelect=document.getElementById("settingTheme");if(langSelect)langSelect.value=lang;if(themeSelect)themeSelect.value=theme;}});
+</script>
+</body></html>

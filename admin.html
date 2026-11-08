@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supplier Quotation • Admin</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#121e31;--line:#263650;--text:#eaf2ff;--muted:#9db0ca;--blue:#3b82f6;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,Segoe UI,Arial;padding:24px}
+main{max-width:1050px;margin:auto}.head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+h1{margin:0 0 5px}p{color:var(--muted)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin:18px 0}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}input,select,button{font:inherit;border-radius:9px;padding:11px;border:1px solid var(--line);background:#0b1526;color:var(--text)}button{background:var(--blue);border:0;cursor:pointer;font-weight:600}button.secondary{background:#25364f}button.danger{background:var(--red)}table{width:100%;border-collapse:collapse;margin-top:14px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line)}small{color:var(--muted)}.msg{margin-top:12px;color:#93c5fd}
+@media(max-width:600px){body{padding:12px}.panel{padding:12px}table{font-size:13px}th,td{padding:7px}}
+
+/* Phase 13 — Premium dark-blue UI refresh */
+:root{
+ --bg:#060d19!important;--panel:#0d1a2d!important;--line:#1d3554!important;
+ --text:#edf5ff!important;--muted:#91a8c6!important;--blue:#087cff!important;
+ --green:#10b981!important;--amber:#f59e0b!important;--red:#ef4444!important;
+}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 12% -10%,#102b50 0,transparent 36%),radial-gradient(ellipse at 100% 0,#0a2140 0,transparent 30%),#060d19!important;color:#edf5ff!important;font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif!important}
+main,.wrap{max-width:1320px!important}
+h1{font-size:clamp(24px,3vw,34px)!important;letter-spacing:-.6px;font-weight:750!important}
+h2{letter-spacing:-.3px}
+p,small,.muted,.sub{color:#91a8c6!important}
+.panel,.tile,.cards>div,.card{background:linear-gradient(145deg,rgba(15,31,52,.97),rgba(9,20,36,.98))!important;border:1px solid #1d3554!important;border-radius:16px!important;box-shadow:0 12px 32px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.025)!important}
+input,select,textarea{background:#071426!important;border:1px solid #294465!important;color:#edf5ff!important;border-radius:10px!important;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none!important;border-color:#1687ff!important;box-shadow:0 0 0 3px rgba(8,124,255,.16)!important}
+button,.btn,.actions a,.head a,header a{border-radius:10px!important;transition:transform .15s,filter .15s,background .15s}
+button:not(.secondary):not(.btn2){background:linear-gradient(135deg,#087cff,#075bd4)!important;color:#fff!important;box-shadow:0 5px 15px rgba(8,124,255,.16)}
+button:hover,a:hover{filter:brightness(1.13);transform:translateY(-1px)}
+.secondary,.btn2{background:#172b45!important;color:#dcecff!important;border:1px solid #294465!important}
+a{color:#7fc0ff}
+table{border-collapse:separate!important;border-spacing:0!important;border:1px solid #1d3554!important;border-radius:12px!important;overflow:hidden}
+th{background:#10243d!important;color:#d9eaff!important;font-weight:650!important}
+td,th{border-bottom:1px solid #1b304b!important;padding:12px!important}
+tr:hover td{background:rgba(17,52,88,.22)}
+hr{border:0;border-top:1px solid #1d3554}
+.badge,.status{border-radius:999px!important}
+@media(max-width:700px){
+ body{padding:12px!important}
+ main,.wrap{padding-left:0!important;padding-right:0!important}
+ .panel{padding:14px!important;margin:12px 0!important}
+ table{min-width:680px}
+ h1{font-size:24px!important}
+}
+
+</style><style>
+/* Phase 14 — Dashboard and Portal visual polish */
+body:has(.cards) .cards{gap:16px}
+body:has(.cards) .card{position:relative;overflow:hidden;padding:20px 21px!important;min-height:112px}
+body:has(.cards) .card:before{content:"";position:absolute;right:-34px;top:-42px;width:110px;height:110px;border-radius:50%;background:rgba(8,124,255,.09);pointer-events:none}
+.metric{font-size:clamp(28px,3vw,36px)!important;line-height:1.15;color:#f5f9ff!important;letter-spacing:-1px}
+.label{font-size:12px!important;letter-spacing:.5px;text-transform:uppercase;color:#9bb4d2!important;font-weight:650}
+.head{padding-bottom:6px}
+.head h1{background:linear-gradient(90deg,#f4f8ff,#8fc7ff);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.actions button{border:1px solid rgba(88,145,210,.22)!important}
+.grid{gap:16px!important}
+.panel{padding:20px!important}
+.panel h2{margin-top:0;color:#e7f2ff!important}
+.tile{background:linear-gradient(150deg,#10233c,#0a1729)!important;transition:transform .18s,border-color .18s,box-shadow .18s}
+.tile:hover{transform:translateY(-3px);border-color:#2f75c4!important;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.tile h3{font-size:17px!important;color:#f0f7ff}
+.tag{border:1px solid #2b4b70!important;background:#102b49!important;color:#9bcaff!important}
+table{width:100%}
+@media(max-width:780px){
+ .grid{grid-template-columns:1fr!important}
+ .head{align-items:flex-start!important}
+ .actions{width:100%}
+ .actions button{flex:1}
+}
+</style></head><body><main>
+<div class="head"><div><h1>Admin Console</h1><p>Supplier Quotation System • User access management</p></div><button class="secondary" onclick="location.href='/'">Open Application</button></div>
+<section class="panel"><h2>Create User</h2><form id="create">
+<input name="username" placeholder="Username" required autocomplete="off"><input name="displayName" placeholder="Display name" required>
+<input name="password" type="password" placeholder="Password (12+ characters)" minlength="12" required>
+<select name="role"><option>User</option><option>Admin</option></select><button>Create account</button></form><div class="msg" id="msg"></div></section>
+<section class="panel"><div class="head"><h2>Users</h2><button onclick="load()">Refresh</button></div><div style="overflow:auto"><div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0"><input id="userSearch" placeholder="Search username or display name..." oninput="renderUsers()" style="flex:1;min-width:200px"><select id="userRoleFilter" onchange="renderUsers()"><option value="all">All roles</option><option>User</option><option>Admin</option></select><select id="userStatusFilter" onchange="renderUsers()"><option value="all">All statuses</option><option value="active">Active</option><option value="disabled">Disabled</option></select><button class="secondary" onclick="exportUsers()">Export filtered CSV</button><span id="userCount"></span></div><table><thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Portal</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<section class="panel" id="portalPanel" style="display:none">
+<div class="head"><div><h2 id="portalTitle">Portal Access Management</h2><p>Choose the sections visible to this employee.</p></div><button class="secondary" onclick="closePortal()">Close</button></div>
+<label style="display:flex;align-items:center;gap:10px;margin:12px 0"><input type="checkbox" id="portalEnabled" style="width:auto"> Enable My Portal access for this user</label>
+<div id="moduleChecks" class="grid"></div>
+<div class="actions"><button onclick="savePortal()">Save Portal Permissions</button></div><div class="msg" id="portalMsg"></div>
+</section>
+<section class="panel" id="smtpPanel">
+<h2>Email Configuration (SMTP)</h2>
+<p>Configure Gmail SMTP here. Use a Google App Password; the password is not returned to the page after saving.</p>
+<form id="smtpForm">
+<input name="host" value="smtp.gmail.com" placeholder="SMTP Host" required>
+<input name="port" type="number" value="587" placeholder="SMTP Port" required>
+<input name="username" type="email" placeholder="SMTP Username / Gmail" required>
+<input name="password" type="password" placeholder="Gmail App Password (leave blank to keep saved)" autocomplete="new-password">
+<input name="fromEmail" type="email" placeholder="From Email" required>
+<label style="display:flex;align-items:center;gap:8px"><input name="enableSsl" type="checkbox" checked style="width:auto"> Enable TLS / SSL</label>
+<button type="submit">Save SMTP Settings</button>
+</form>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+<input id="smtpTestTo" type="email" placeholder="Test recipient email" style="flex:1;min-width:220px">
+<button type="button" id="smtpTest">Send Test Email</button>
+</div>
+<div class="msg" id="smtpMsg"></div>
+</section>
+<section class="panel" id="emailHistoryPanel">
+<div class="head"><div><h2>Email History</h2><p>Latest email attempts (up to 250 entries).</p></div><button type="button" onclick="loadEmailHistory()">Refresh History</button></div>
+<div style="overflow:auto"><table><thead><tr><th>Date (UTC)</th><th>Recipient</th><th>Subject</th><th>Category</th><th>Status</th><th>Details</th></tr></thead><tbody id="emailHistoryRows"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
+</section>
+<footer><small>Copyright © Shady Anany</small></footer></main>
+<script>
+const token=localStorage.getItem("sqAccessToken")||localStorage.getItem("sqAccessToken")||localStorage.getItem("sq_token"); if(!token){location.href="/";} 
+async function api(path,method="GET",body){let r=await fetch("/api"+path,{method,headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});if(!r.ok){let t=await r.text();throw Error(t||r.status)}return r.status===204?null:r.json()}
+let allUsers=[];
+function renderUsers(){let term=document.getElementById("userSearch").value.toLowerCase(),role=document.getElementById("userRoleFilter").value,status=document.getElementById("userStatusFilter").value;let list=allUsers.filter(u=>(role==="all"||u.role===role)&&(status==="all"||(status==="active"?u.isActive:!u.isActive))&&(u.username+" "+u.displayName).toLowerCase().includes(term));document.getElementById("userCount").textContent=`Showing ${list.length} of ${allUsers.length}`;document.getElementById("rows").innerHTML=list.map(u=>`<tr><td>${esc(u.username)}</td><td>${esc(u.displayName)}</td><td>${esc(u.role)}</td><td>${u.isActive?"Active":"Disabled"}</td><td>${u.portalAccess?"Portal ON":"Portal OFF"}</td><td><button class="secondary" onclick="openPortal(${u.id},decodeURIComponent('${encodeURIComponent(u.displayName)}'),${u.portalAccess},decodeURIComponent('${encodeURIComponent(u.portalModulesJson||'[]')}'),decodeURIComponent('${encodeURIComponent(u.role)}'))">Portal Access</button> <button class="secondary" onclick="toggle(${u.id},${!u.isActive})">${u.isActive?"Disable":"Enable"}</button> <button class="danger" onclick="removeUser(${u.id})">Delete</button></td></tr>`).join("")}
+async function load(){try{allUsers=await api("/users");renderUsers()}catch(e){msg.textContent="Unable to load users: "+e.message}}
+function exportUsers(){let term=document.getElementById("userSearch").value.toLowerCase(),role=document.getElementById("userRoleFilter").value,status=document.getElementById("userStatusFilter").value;let list=allUsers.filter(u=>(role==="all"||u.role===role)&&(status==="all"||(status==="active"?u.isActive:!u.isActive))&&(u.username+" "+u.displayName).toLowerCase().includes(term));let rows=[["Username","Display Name","Role","Status","Portal Access"],...list.map(u=>[u.username,u.displayName,u.role,u.isActive?"Active":"Disabled",u.portalAccess?"ON":"OFF"])];let csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\\r\\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="AdminUsers_Filtered.csv";a.click();URL.revokeObjectURL(a.href)}
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+async function toggle(id,on){try{await api(`/users/${id}/active`,"PATCH",{isActive:on});load()}catch(e){msg.textContent=e.message}}
+async function removeUser(id){if(!confirm("Delete this user?"))return;try{await api(`/users/${id}`,"DELETE");load()}catch(e){msg.textContent=e.message}}
+const msg=document.getElementById("msg");
+document.getElementById("create").onsubmit=async e=>{e.preventDefault();let f=new FormData(e.target);try{await api("/users","POST",{username:f.get("username"),displayName:f.get("displayName"),password:f.get("password"),role:f.get("role")});msg.textContent="Account created.";e.target.reset();load()}catch(x){msg.textContent="Create failed: "+x.message}};
+
+let selectedPortalUserId=null;
+const portalModules=["Dashboard","Approvals","Price Comparison","Quotation Entry","Reports & Export","Notifications","Audit Log","Admin Console"];
+function openPortal(id,displayName,enabled,modulesJson,role){
+  selectedPortalUserId=id;
+  document.getElementById("portalTitle").textContent="Portal Access — "+displayName;
+  document.getElementById("portalEnabled").checked=!!enabled;
+  let selected=[]; try{selected=JSON.parse(modulesJson||"[]")}catch(e){selected=[]}
+  const host=document.getElementById("moduleChecks"); host.innerHTML="";
+  portalModules.forEach(module=>{
+    if(module==="Admin Console" && role!=="Admin") return;
+    const label=document.createElement("label"); label.style.cssText="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:10px";
+    const checkbox=document.createElement("input"); checkbox.type="checkbox"; checkbox.value=module; checkbox.style.width="auto"; checkbox.checked=selected.includes(module);
+    label.appendChild(checkbox); label.appendChild(document.createTextNode(module)); host.appendChild(label);
+  });
+  document.getElementById("portalMsg").textContent="";
+  document.getElementById("portalPanel").style.display="block";
+  document.getElementById("portalPanel").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function closePortal(){document.getElementById("portalPanel").style.display="none";selectedPortalUserId=null;}
+async function savePortal(){
+  if(selectedPortalUserId===null)return;
+  const portalAccess=document.getElementById("portalEnabled").checked;
+  const modules=[...document.querySelectorAll("#moduleChecks input[type=checkbox]:checked")].map(x=>x.value);
+  const out=document.getElementById("portalMsg"); out.textContent="Saving permissions…";
+  try{await api(`/users/${selectedPortalUserId}/portal-access`,"PATCH",{portalAccess,modules});out.textContent="Portal permissions saved successfully.";await load();}
+  catch(e){out.textContent="Save failed: "+e.message;}
+}
+async function loadEmailHistory(){
+ const tbody=document.getElementById("emailHistoryRows");
+ tbody.innerHTML="<tr><td colspan=6>Loading…</td></tr>";
+ try{
+  const items=await api("/email/history");
+  tbody.innerHTML=items.length?items.map(x=>`<tr><td>${esc(x.createdUtc)}</td><td>${esc(x.recipient)}</td><td>${esc(x.subject)}</td><td>${esc(x.category)}</td><td>${esc(x.status)}</td><td>${esc(x.details)}</td></tr>`).join(""):"<tr><td colspan=6>No email attempts recorded yet.</td></tr>";
+ }catch(e){tbody.innerHTML=`<tr><td colspan=6>${esc(e.message)}</td></tr>`;}
+}
+load();
+
+const smtpForm=document.getElementById("smtpForm");
+const smtpMsg=document.getElementById("smtpMsg");
+const smtpTestBtn=document.getElementById("smtpTest");
+const smtpTestTo=document.getElementById("smtpTestTo");
+async function loadSmtpSettings(){
+  smtpMsg.textContent="Loading SMTP settings…";
+  try{
+    const settings=await api("/email/settings");
+    smtpForm.elements.host.value=settings.host||"smtp.gmail.com";
+    smtpForm.elements.port.value=settings.port||587;
+    smtpForm.elements.username.value=settings.username||"";
+    smtpForm.elements.fromEmail.value=settings.fromEmail||"";
+    smtpForm.elements.enableSsl.checked=settings.enableSsl!==false;
+    smtpForm.elements.password.value="";
+    smtpMsg.textContent=settings.hasPassword?"SMTP settings loaded. Saved password is retained.":"SMTP settings loaded. Enter Gmail App Password.";
+  }catch(e){smtpMsg.textContent="Unable to load SMTP settings: "+e.message;}
+}
+smtpForm.addEventListener("submit",async e=>{
+  e.preventDefault();
+  const f=new FormData(smtpForm);
+  const payload={host:f.get("host"),port:Number(f.get("port")),username:f.get("username"),password:f.get("password"),fromEmail:f.get("fromEmail"),enableSsl:f.get("enableSsl")==="on"};
+  const button=smtpForm.querySelector('button[type="submit"]');
+  button.disabled=true;smtpMsg.textContent="Saving SMTP settings…";
+  try{const result=await api("/email/settings","PUT",payload);smtpMsg.textContent=result.message||"SMTP settings saved successfully.";smtpForm.elements.password.value="";}
+  catch(err){smtpMsg.textContent="Save failed: "+err.message;}
+  finally{button.disabled=false;}
+});
+smtpTestBtn.addEventListener("click",async()=>{
+  const to=smtpTestTo.value.trim();
+  if(!to){smtpMsg.textContent="Enter a test recipient email address first.";smtpTestTo.focus();return;}
+  smtpTestBtn.disabled=true;smtpMsg.textContent="Sending test email…";
+  try{const result=await api("/email/test","POST",{to});smtpMsg.textContent=result.message||"Test email sent successfully.";}
+  catch(err){smtpMsg.textContent="Test email failed: "+err.message;}
+  finally{smtpTestBtn.disabled=false;}
+});
+loadSmtpSettings();
+loadEmailHistory();
+
+</script><a id="globalMainAppButton" href="/" title="Return to Main App" style="position:fixed;left:18px;bottom:18px;z-index:99999;display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:10px;background:#174ea6;color:#fff;text-decoration:none;font:600 14px Arial,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.25)">⌂ Main App</a></body></html>
